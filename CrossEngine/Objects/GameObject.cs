@@ -1,8 +1,9 @@
 ﻿using CrossEngine.System;
 
-namespace CrossEngine.Entitys
+namespace CrossEngine
 {
     public class GameObject : CrossBehaviour
     {
+        public Transform Transform { get; private set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿using CrossEngine.Entitys;
+﻿using CrossEngine;
 using CrossEngine.System;
 using System.Collections;
 
