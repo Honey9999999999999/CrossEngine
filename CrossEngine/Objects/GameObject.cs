@@ -2,8 +2,8 @@
 
 namespace CrossEngine
 {
-    public class GameObject : CrossBehaviour
+    public class GameObject() : CrossBehaviour
     {
-        public Transform Transform { get; private set; }
+        public Transform Transform = new();
     }
 }

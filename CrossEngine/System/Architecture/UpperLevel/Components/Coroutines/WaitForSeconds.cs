@@ -1,7 +1,8 @@
 ﻿namespace CrossEngine
 {
-    public struct WaitForSeconds(double delay)
+    public readonly struct WaitForSeconds(double delay) : ICoroutineDelay
     {
-        public DateTime time = DateTime.UtcNow + TimeSpan.FromSeconds(delay);
+        public readonly bool Ready => DateTime.UtcNow >= End;
+        private readonly DateTime End = DateTime.UtcNow + TimeSpan.FromSeconds(delay);
     }
 }

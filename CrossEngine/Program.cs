@@ -1,13 +1,16 @@
 ﻿using CrossEngine;
+using CrossEngine.Objects;
+using CrossEngine.Render;
 using CrossEngine.System;
 using System.Collections;
+
+while (Render().MoveNext()) ;
 
 Engine engine = new();
 engine.StartCore();
 engine.RunPlayMode();
 
 GameObject starter = new();
-
 starter.StartCoroutine(Hi());
 starter.StartCoroutine(Stop());
 
@@ -25,4 +28,22 @@ IEnumerator Stop()
 {
     yield return new WaitForSeconds(4d);
     engine.StopPlayMode();
+}
+
+IEnumerator Render()
+{
+    Camera camera = new();
+    camera.Transform.Position = new(5, 6, 3);
+    camera.Transform.Rotation = new(68, 0, 140);
+    
+    ConsoleScreen screen = new(160, 40, 8, 4);
+    Renderer renderer = new(screen, ref camera);
+
+    Sphere sphere = new();
+
+    while (true)
+    {
+        ConsoleOutput.Write(renderer.Render([sphere]));
+        yield return null;
+    }
 }

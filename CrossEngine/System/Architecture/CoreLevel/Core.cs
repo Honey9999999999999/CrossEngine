@@ -78,7 +78,7 @@ namespace CrossEngine.System.Arhitecture.Core
             {
                 updateRoutine.MoveNext();
 
-                if (fixedUpdateRoutine.Current is WaitForSeconds wait && wait.time > DateTime.UtcNow) continue;
+                if (fixedUpdateRoutine.Current is ICoroutineDelay delay && !delay.Ready) continue;
 
                 fixedUpdateRoutine.MoveNext();
             }

@@ -4,40 +4,39 @@ using static CrossEngine.Render.ConsoleOutput;
 
 namespace CrossEngine.Render
 {
-    public class Render
+    public class Renderer
     {
         private char brightness;
         private readonly char[] gradient = ['`', '.', ';', 'I', 'S', 'O', '%', '&', '@'];
 
-        const float MaxDrawDistance = 9999;
-        const float minShadow = 10;
+        //const float MaxDrawDistance = 9999;
+        //const float minShadow = 10;
 
         private readonly CharInfo[] buffer;
 
+        private readonly ConsoleScreen screen;
         private readonly Camera camera;
-        private readonly int width;
-        private readonly int height;
 
-        public Render(ConsoleScreen screen, ref Camera camera)
+        public Renderer(ConsoleScreen screen, ref Camera camera)
         {
-            buffer = new CharInfo[screen.Width * screen.Height];
-            width = screen.Width;
-            height = screen.Height;
             this.camera = camera;
+            this.screen = screen;
+
+            buffer = new CharInfo[screen.Width * screen.Height];
             camera.RayLength = screen.AspectRatio / 2;
         }
 
-        public CharInfo[] RenderImage(ConsoleScreen screen, List<IRayCastable> gameObjects)
+        public CharInfo[] Render(List<IRayCastable> gameObjects)
         {
             brightness = '@';
             //int i = width / 2,
             //    j = height / 2;
-            for (int i = 0; i < width; i++)
+            for (int i = 0; i < screen.Width; i++)
             {
-                for (int j = 0; j < height; j++)
+                for (int j = 0; j < screen.Height; j++)
                 {
-                    float u = i * 2.0f / width - 1,
-                          v = j * 2.0f / height - 1;
+                    float u = i * 2.0f / screen.Width - 1,
+                          v = j * 2.0f / screen.Height - 1;
                     Vector2 uv = new(u * screen.AspectRatio / screen.SymbolAspectRatio, v);
 
                     Ray ray = new(
@@ -122,8 +121,8 @@ namespace CrossEngine.Render
 
         private void SetPixel(int x, int y, ConsoleColor color)
         {
-            buffer[width * y + x].Char.UnicodeChar = brightness;
-            buffer[width * y + x].Attributes = (short)color;
+            buffer[screen.Width * y + x].Char.UnicodeChar = brightness;
+            buffer[screen.Width * y + x].Attributes = (short)color;
         }
     }
 }

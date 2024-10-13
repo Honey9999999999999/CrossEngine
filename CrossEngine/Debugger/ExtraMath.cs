@@ -1,4 +1,4 @@
-﻿namespace CrossEngine.Render
+﻿namespace CrossEngine.Debugger
 {
     public static class ExtraMath
     {

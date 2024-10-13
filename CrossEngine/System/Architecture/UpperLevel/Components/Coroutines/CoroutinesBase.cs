@@ -15,7 +15,7 @@ namespace CrossEngine
 
         public override void Initialize()
         {
-            routines = new();
+            routines = [];
 
             base.Initialize();
         }
@@ -33,7 +33,7 @@ namespace CrossEngine
         {
             foreach (var routine in routines)
             {
-                if (routine.Current is WaitForSeconds wait && wait.time > DateTime.UtcNow) continue;
+                if (routine.Current is ICoroutineDelay delay && !delay.Ready) continue;
 
                 routine.MoveNext();
             }
