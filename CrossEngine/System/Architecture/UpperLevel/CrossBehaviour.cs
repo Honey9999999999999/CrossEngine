@@ -26,7 +26,7 @@ namespace CrossEngine
         {
             foreach (var routine in _routines)
             {
-                if (routine.Current is WaitForSeconds wait && wait.time > DateTime.UtcNow) continue;
+                if (routine.Current is ICoroutineDelay delay && !delay.Ready) continue;
 
                 routine.MoveNext();
             }
