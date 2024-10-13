@@ -28,7 +28,9 @@
 
         public void AddRootObject(CrossBehaviour rootObject)
         {
-            _rootObjects.Add(rootObject);
+            void Add() => _rootObjects.Add(rootObject);
+
+            Engine.instance.coreManager.core.AddTask(Add);
         }
     }
 }

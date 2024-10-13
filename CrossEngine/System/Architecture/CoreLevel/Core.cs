@@ -3,10 +3,15 @@ using System.Collections;
 
 namespace CrossEngine.System.Arhitecture.Core
 {
-    public class Core : ICore
+    internal class Core : ICore
     {
         public event Action? OnInitialized;
+        private event Action? OnPreUpdate;
+
         public bool isInitialized => _isInitialized;
+
+        public bool isRunPlayMode => _isRunPlayMode;
+        private bool _isRunPlayMode;
 
         private bool _isInitialized;
 
@@ -14,10 +19,13 @@ namespace CrossEngine.System.Arhitecture.Core
 
         private Thread update;
 
+        private TaskManager _taskManager;
+
         public Core(CoreComponentsConfig _coreConfig)
         {
             _coreBase = new CoreComponents(_coreConfig);
             update = new(Update);
+            _taskManager = new();
         }
 
         public void InitializeCore()
@@ -42,6 +50,7 @@ namespace CrossEngine.System.Arhitecture.Core
         public void RunPlayMode()
         {
             IEnumerator startPlayModeRoutine = StartPlayModeRoutine();
+            _isRunPlayMode = true;
             while (startPlayModeRoutine.MoveNext()) ;
         }
 
@@ -69,6 +78,24 @@ namespace CrossEngine.System.Arhitecture.Core
             update.Start();
         }
 
+        internal void AddTask(Action action)
+        {
+            if (_isRunPlayMode)
+            {
+                void Add()
+                {
+                    _taskManager.AddTask(new Task(action));
+                    OnPreUpdate -= Add;
+                }
+
+                OnPreUpdate += Add;
+            }
+            else
+            {
+                action.Invoke();
+            }
+        }
+
         private void Update()
         {
             IEnumerator updateRoutine = UpdateRoutine();
@@ -76,21 +103,24 @@ namespace CrossEngine.System.Arhitecture.Core
 
             while (true)
             {
-                updateRoutine.MoveNext();
+                OnPreUpdate?.Invoke();
+                _taskManager.RunTasks();
 
                 if (fixedUpdateRoutine.Current is ICoroutineDelay delay && !delay.Ready) continue;
 
                 fixedUpdateRoutine.MoveNext();
+
+                updateRoutine.MoveNext();
             }
         }
 
         private IEnumerator UpdateRoutine()
         {
-            List<CrossBehaviour> rootGAmeObjects = SceneManagerBase.instance.GetActiveScene().GetRootGameObjects();
+            List<CrossBehaviour> rootGameObjects = SceneManagerBase.instance.GetActiveScene().GetRootGameObjects();
 
             while (true)
             {
-                foreach (var gameObject in rootGAmeObjects)
+                foreach (var gameObject in rootGameObjects)
                 {
                     gameObject.Update();
                 }
@@ -114,6 +144,7 @@ namespace CrossEngine.System.Arhitecture.Core
         public void StopRunPlayMode()
         {
             IEnumerator stopPlayModeRoutine = StopPlayModeRoutine();
+            _isRunPlayMode = false;
             while (stopPlayModeRoutine.MoveNext()) ;
         }
 

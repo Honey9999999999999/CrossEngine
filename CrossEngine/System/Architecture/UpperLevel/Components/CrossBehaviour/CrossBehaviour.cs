@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using CrossEngine.System;
+using System.Collections;
 
 namespace CrossEngine
 {
@@ -24,6 +25,7 @@ namespace CrossEngine
 
         public virtual void Update() 
         {
+
             foreach (var routine in _routines)
             {
                 if (routine.Current is ICoroutineDelay delay && !delay.Ready) continue;
@@ -40,7 +42,9 @@ namespace CrossEngine
 
         public Coroutine StartCoroutine(IEnumerator routine)
         {
-            _routines.Add(routine);
+            void Add() => _routines.Add(routine);
+
+            Engine.instance.coreManager.core.AddTask(Add);
             return Coroutine.CreateCoroutine(routine);
         }
 

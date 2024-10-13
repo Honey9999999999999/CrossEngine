@@ -6,7 +6,6 @@
         {
             _coreComponents = new();
 
-            CreateComponent<CoroutinesBase>();
 
             return _coreComponents;
         }

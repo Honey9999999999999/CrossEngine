@@ -7,7 +7,7 @@ namespace CrossEngine.System.Arhitecture.Core
         public event Action? OnStartLoading;
         public event Action? OnLoaded;
 
-        public Core core
+        internal Core core
         {
             get
             {

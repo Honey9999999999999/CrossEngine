@@ -8,7 +8,6 @@ namespace CrossEngine.System.Arhitecture.Core
         {
             _coreComponents = new();
 
-            CreateComponent<CoroutinesBase>();
             CreateComponent<SceneManager>();
 
             return _coreComponents;
