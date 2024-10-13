@@ -36,7 +36,7 @@ namespace CrossEngine.System
 
         public void RunPlayMode()
         {
-            SceneManagerBase.instance.OnSceneLoaded += () => Console.WriteLine($"Scene '{SceneManagerBase.instance.GetActiveScene().name}' is loaded!");
+            SceneManagerBase.instance.OnSceneLoaded += () => Console.WriteLine($"Scene '{SceneManagerBase.instance.GetActiveScene().name}' is loaded!\n");
 
             SceneManagerBase.instance.CreateScene("First Scene");
             SceneManagerBase.instance.LoadScene("First Scene");

@@ -98,6 +98,12 @@ namespace CrossEngine.System.Architecture.Scene
 
             foreach (var gameObject in rootGAmeObjects)
             {
+                gameObject.OnEnable();
+            }
+            yield return null;
+
+            foreach (var gameObject in rootGAmeObjects)
+            {
                 gameObject.Start();
             }
             yield return null;
@@ -117,13 +123,19 @@ namespace CrossEngine.System.Architecture.Scene
         {
             foreach (var gameObject in rootGAmeObjects)
             {
-                //gameObject.Awake();
+                gameObject.OnApplicationQuit();
             }
             yield return null;
 
             foreach (var gameObject in rootGAmeObjects)
             {
-                //gameObject.Start();
+                gameObject.OnDisable();
+            }
+            yield return null;
+
+            foreach (var gameObject in rootGAmeObjects)
+            {
+                gameObject.OnDestroy();
             }
             yield return null;
         }
