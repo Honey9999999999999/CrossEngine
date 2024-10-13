@@ -1,7 +1,8 @@
-﻿namespace CrossEngine.System.Arhitecture.CoreLevel.CoreManager
+﻿namespace CrossEngine.System.Arhitecture.Core
 {
     public enum TypeConfigs
     {
-        Base
+        ConsoleCore,
+        FormCore
     }
 }

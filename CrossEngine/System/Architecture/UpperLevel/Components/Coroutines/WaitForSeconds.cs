@@ -1,4 +1,4 @@
-﻿namespace CrossEngine.System
+﻿namespace CrossEngine
 {
     public struct WaitForSeconds(double delay)
     {

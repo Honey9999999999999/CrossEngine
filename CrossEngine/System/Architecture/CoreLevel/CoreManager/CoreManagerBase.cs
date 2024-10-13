@@ -1,14 +1,28 @@
-﻿using CrossEngine.System.Arhitecture.SceneLevel;
-using System.Collections;
+﻿using System.Collections;
 
-namespace CrossEngine.System.Arhitecture.CoreLevel.CoreManager
+namespace CrossEngine.System.Arhitecture.Core
 {
     public abstract class CoreManagerBase
     {
-        public event Action OnStartLoading;
-        public event Action OnLoaded;
+        public event Action? OnStartLoading;
+        public event Action? OnLoaded;
 
-        public Core core { get; private set; }
+        public Core core
+        {
+            get
+            {
+                if (_core == null)
+                {
+                    throw new CrossException("Core is not initialized!!!");
+                }
+                else
+                {
+                    return _core;
+                }
+            }
+        }
+        private Core _core;
+
         public TypeConfigs currentConfig { get; private set; }
         public bool isLoading { get; private set; }
 
@@ -16,7 +30,8 @@ namespace CrossEngine.System.Arhitecture.CoreLevel.CoreManager
 
         public CoreManagerBase()
         {
-            _coreConfigsMap = new();
+            _coreConfigsMap = [];
+            currentConfig = Engine.instance.currentConfig;
         }
 
         public abstract void InitCoreComponentsConfigMap();
@@ -31,26 +46,25 @@ namespace CrossEngine.System.Arhitecture.CoreLevel.CoreManager
             isLoading = true;
             OnStartLoading?.Invoke();
 
+            Console.WriteLine($"{currentConfig} is start loading...\n");
+
             IEnumerator loadRoutine = LoadCoreEngineWithConfigRoutine(type);
             while (loadRoutine.MoveNext()) ;
             currentConfig = type;
 
             isLoading = false;
             OnLoaded?.Invoke();
+
+            Console.WriteLine($"\n{currentConfig} is loaded.\n");
         }
 
         private IEnumerator LoadCoreEngineWithConfigRoutine(TypeConfigs type)
         {
-            core = new Core(_coreConfigsMap[type]);
+            _core = new Core(_coreConfigsMap[type]);
 
-            core.InitializeCore();
+            _core.InitializeCore();
 
             yield return null;
-        }
-
-        public void RunCoreEngine()
-        {
-            core.Run();
         }
     }
 }

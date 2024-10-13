@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-namespace CrossEngine.System.Arhitecture.UpperLevel.Components.Coroutines
+namespace CrossEngine
 {
     public sealed class Coroutine
     {

@@ -2,11 +2,14 @@
 using CrossEngine.System;
 using System.Collections;
 
-EngineExample.Run();
+Engine engine = new();
+engine.StartCore();
+engine.RunPlayMode();
 
 GameObject starter = new();
 
 starter.StartCoroutine(Hi());
+starter.StartCoroutine(Stop());
 
 IEnumerator Hi()
 {
@@ -15,6 +18,11 @@ IEnumerator Hi()
     foreach (var item in text)
     {
         Console.Write(item);
-        yield return new WaitForSeconds(0.2d);
+        yield return new WaitForSeconds(0.02d);
     }
+}
+IEnumerator Stop()
+{
+    yield return new WaitForSeconds(4d);
+    engine.StopPlayMode();
 }

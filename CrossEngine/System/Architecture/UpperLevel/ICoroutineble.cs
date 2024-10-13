@@ -1,7 +1,6 @@
-﻿using CrossEngine.System.Arhitecture.UpperLevel.Components.Coroutines;
-using System.Collections;
+﻿using System.Collections;
 
-namespace CrossEngine.System.Arhitecture.UpperLevel
+namespace CrossEngine
 {
     public interface ICoroutineble
     {

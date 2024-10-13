@@ -1,8 +1,12 @@
-﻿namespace CrossEngine.System.Interfaces
+﻿namespace CrossEngine.System.Arhitecture.Core
 {
     public interface ICore
     {
+        public event Action? OnInitialized;
+        public bool isInitialized { get; }
+
         public void InitializeCore();
-        public void Run();
+        public void RunPlayMode();
+        public void StopRunPlayMode();
     }
 }

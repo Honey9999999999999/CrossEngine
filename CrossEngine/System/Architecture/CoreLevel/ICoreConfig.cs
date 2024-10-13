@@ -1,4 +1,4 @@
-﻿namespace CrossEngine.System.Interfaces
+﻿namespace CrossEngine.System.Arhitecture.Core
 {
     public interface ICoreConfig
     {

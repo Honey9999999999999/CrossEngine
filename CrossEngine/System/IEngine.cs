@@ -2,6 +2,8 @@
 {
     public interface IEngine
     {
-        public static abstract void Run();
+        public void StartCore();
+        public void RunPlayMode();
+        public void StopPlayMode();
     }
 }

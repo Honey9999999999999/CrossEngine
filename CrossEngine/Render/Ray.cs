@@ -23,9 +23,9 @@ namespace CrossEngine.Render
             public static readonly Hit Miss = new() { Distance = float.NaN };
 
             public readonly Hit Closest(Hit other) =>
-                other.Distance < 0              ? this  :
-                other.Distance < this.Distance  ? other :
-                this.Distance  < 0              ? other : this;
+                other.Distance < 0 ? this :
+                other.Distance < this.Distance ? other :
+                this.Distance < 0 ? other : this;
         }
     }
 

@@ -1,17 +1,17 @@
-﻿using CrossEngine.System.Arhitecture.UpperLevel;
-using CrossEngine.System.Arhitecture.UpperLevel.Components.Coroutines;
-using CrossEngine.System.Interfaces;
-using System.Collections;
+﻿using System.Collections;
 
-namespace CrossEngine.System
+namespace CrossEngine
 {
-    public abstract class CrossBehaviour : ICrossBehaviour, ICoroutineble
+    public abstract class CrossBehaviour : Initializeble, ICrossBehaviour, ICoroutineble
     {
-        public static event Action OnInitialized;
-        public static bool isInitialized;
+        private bool _isInitialized;
 
-        public virtual void OnCreate() { Console.WriteLine($"{GetType()} is Created"); }
-        public virtual void Initialize() { Console.WriteLine($"{GetType()} is Initialized"); OnInitialized?.Invoke(); isInitialized = true; }
+        private List<ICrossBehaviour> components;        
+
+        public CrossBehaviour()
+        {
+            components = [];
+        }
 
         public virtual void Awake() { }
         public virtual void Start() { }
@@ -32,6 +32,11 @@ namespace CrossEngine.System
         public void StopCoroutine(Coroutine coroutine)
         {
             CoroutinesBase.instance.StopRoutine(coroutine);
+        }
+
+        public void AddComponent<TCrossBehaviour>() where TCrossBehaviour : ICrossBehaviour, new()
+        {
+            components.Add(new TCrossBehaviour());
         }
     }
 }

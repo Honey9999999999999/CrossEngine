@@ -1,12 +1,13 @@
-﻿namespace CrossEngine.System.Interfaces
+﻿namespace CrossEngine
 {
-    public interface ICrossBehaviour
+    public interface ICrossBehaviour : IInitializeble
     {
-        public void OnCreate();
-        public void Initialize();
         public void Awake();
         public void Start();
+
         public void Update();
         public void FixedUpdate();
+
+        public void AddComponent<TCrossBehaviour>() where TCrossBehaviour : ICrossBehaviour, new();
     }
 }
