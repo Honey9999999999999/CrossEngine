@@ -25,5 +25,10 @@
         }
 
         internal void SetIndex(int index) => _index = index;
+
+        public void AddRootObject(CrossBehaviour rootObject)
+        {
+            _rootObjects.Add(rootObject);
+        }
     }
 }

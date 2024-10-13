@@ -1,6 +1,4 @@
-﻿using CrossEngine.System;
-
-namespace CrossEngine
+﻿namespace CrossEngine
 {
     public class GameObject : CrossBehaviour
     {

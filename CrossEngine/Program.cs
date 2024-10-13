@@ -1,5 +1,6 @@
 ﻿using CrossEngine;
 using CrossEngine.System;
+using CrossEngine.System.Architecture.Scene;
 using System.Collections;
 
 Engine engine = new();
@@ -8,8 +9,10 @@ engine.RunPlayMode();
 
 GameObject starter = new();
 
+SceneManager.instance.GetActiveScene().AddRootObject(starter);
+
 starter.StartCoroutine(Hi());
-starter.StartCoroutine(Stop());
+//starter.StartCoroutine(Stop());
 
 IEnumerator Hi()
 {
