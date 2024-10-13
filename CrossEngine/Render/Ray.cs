@@ -20,12 +20,20 @@ namespace CrossEngine.Render
             public object? Object;
             public float Distance;
 
-            public static readonly Hit Miss = new() { Distance = float.NaN };
+            public static readonly Hit Miss = new() { Distance = float.PositiveInfinity };
 
-            public readonly Hit Closest(Hit other) =>
-                other.Distance < 0 ? this :
-                other.Distance < this.Distance ? other :
-                this.Distance < 0 ? other : this;
+            public readonly Hit Closest(Hit other)
+            {
+                if (other.Distance == float.PositiveInfinity) return this;
+                if (this.Distance == float.PositiveInfinity) return other;
+
+                if (other.Distance <= 0) return this;
+                if (this.Distance <= 0) return other;
+
+                if (other.Distance < this.Distance) return other;
+
+                return this;
+            }
         }
     }
 

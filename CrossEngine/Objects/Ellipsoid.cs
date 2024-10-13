@@ -3,11 +3,13 @@ using System.Numerics;
 
 namespace CrossEngine.Objects
 {
-    public class Sphere : GameObject, IRayCastable
+    public class Ellipsoid : GameObject, IRayCastable
     {
         public Ray.Hit Cast(Ray ray)
         {
+            ray.Origin /= Transform.Scale;
             ray.Direction *= Transform.Scale;
+            ray.Direction = Vector3.Normalize(ray.Direction);
             Vector3 offset = ray.Origin - Transform.Position;
             float Z = Vector3.Dot(offset, ray.Direction);
             float D = Vector3.Dot(offset, offset) - 1;

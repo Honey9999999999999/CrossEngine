@@ -6,7 +6,7 @@ namespace CrossEngine.Render
 {
     public class Renderer
     {
-        private char brightness;
+        private char symbol;
         private readonly char[] gradient = ['`', '.', ';', 'I', 'S', 'O', '%', '&', '@'];
 
         //const float MaxDrawDistance = 9999;
@@ -26,15 +26,16 @@ namespace CrossEngine.Render
             camera.RayLength = screen.AspectRatio / 2;
         }
 
-        public CharInfo[] Render(List<IRayCastable> gameObjects)
+        public CharInfo[] Render(List<IRayCastable> gameObjects)//, List<ILightSource> light)
         {
-            brightness = '@';
-            //int i = width / 2,
-            //    j = height / 2;
             for (int i = 0; i < screen.Width; i++)
             {
                 for (int j = 0; j < screen.Height; j++)
                 {
+                    //Parallel.For(0, screen.Width * screen.Height, i =>
+                    //{
+                    //int j = i / screen.Width; i %= screen.Width;
+
                     float u = i * 2.0f / screen.Width - 1,
                           v = j * 2.0f / screen.Height - 1;
                     Vector2 uv = new(u * screen.AspectRatio / screen.SymbolAspectRatio, v);
@@ -48,7 +49,14 @@ namespace CrossEngine.Render
                     foreach (IRayCastable obj in gameObjects)
                         hit = hit.Closest(obj.Cast(ray));
 
+                    if (i == screen.Width / 2 && j == screen.Height / 2)
+                        _ = "STOP HERE";
+
+                    float light = Vector3.Dot(hit.Normal, Vector3.UnitZ) / 2 + 0.5f;
+                    symbol = gradient[(int)(light * (gradient.Length - 1))];
+
                     SetPixel(i, j, hit.Object != null ? ConsoleColor.Red : ConsoleColor.DarkBlue);
+                    //});
                 }
             }
             return buffer;
@@ -121,7 +129,7 @@ namespace CrossEngine.Render
 
         private void SetPixel(int x, int y, ConsoleColor color)
         {
-            buffer[screen.Width * y + x].Char.UnicodeChar = brightness;
+            buffer[screen.Width * y + x].Char.UnicodeChar = symbol;
             buffer[screen.Width * y + x].Attributes = (short)color;
         }
     }

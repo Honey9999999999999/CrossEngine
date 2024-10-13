@@ -10,9 +10,9 @@ namespace CrossEngine
             readonly get => _rotation;
             set
             {
-                _rotation = new Vector3(Math.Clamp(value.X, -MathF.Tau, MathF.Tau),
-                                        Math.Clamp(value.Y, -MathF.Tau, MathF.Tau),
-                                        Math.Clamp(value.Z, -MathF.Tau, MathF.Tau));
+                _rotation = new Vector3(value.X % MathF.Tau,
+                                        value.Y % MathF.Tau,
+                                        value.Z % MathF.Tau);
 
                 Matrix4x4 x = Matrix4x4.CreateRotationX(Rotation.X);
                 Matrix4x4 y = Matrix4x4.CreateRotationY(Rotation.Y);
@@ -21,7 +21,7 @@ namespace CrossEngine
                 RotationMatrix = x * y * z;
             }
         }
-        public Matrix4x4 RotationMatrix { get; private set; }
+        public Matrix4x4 RotationMatrix { readonly get; private set; }
         public Vector3 Scale;
 
         private Vector3 _rotation;
