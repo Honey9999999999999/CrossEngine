@@ -46,7 +46,7 @@ IEnumerator Render()
     ConsoleScreen screen = new(240, 60, 8, 4);
     Renderer renderer = new(screen, ref camera);
 
-    Ellipsoid sphere = new();
+    Sphere sphere = new();
     // sphere.Transform.Position = -Vector3.UnitZ * 5;
 
     DateTime start = DateTime.UtcNow;

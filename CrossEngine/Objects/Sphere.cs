@@ -3,7 +3,7 @@ using System.Numerics;
 
 namespace CrossEngine.Objects
 {
-    public class Ellipsoid : GameObject, IRayCastable
+    public class Sphere : GameObject, IRayCastable
     {
         public Ray.Hit Cast(Ray ray)
         {
