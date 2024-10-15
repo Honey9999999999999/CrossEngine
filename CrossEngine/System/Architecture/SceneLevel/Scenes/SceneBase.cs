@@ -1,15 +1,13 @@
-﻿namespace CrossEngine.System.Architecture.Scene
+﻿namespace CrossEngine.System
 {
-    internal abstract class SceneBase : IScene
+    public abstract class SceneBase : IScene
     {
         public string name => _name;
         public int index => _index;
-        public bool isLoaded => _isLoaded;
         public int rootCount => _rootObjects.Count;
 
         private string _name;
         private int _index;
-        private bool _isLoaded;
 
         private List<CrossBehaviour> _rootObjects;
 
@@ -30,7 +28,7 @@
         {
             void Add() => _rootObjects.Add(rootObject);
 
-            Engine.instance.coreManager.core.AddTask(Add);
+            Engine.GetCore().CoreRequiest(Add);
         }
     }
 }

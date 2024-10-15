@@ -1,9 +1,12 @@
-﻿namespace CrossEngine.System
+﻿using CrossEngine.System.Core;
+
+namespace CrossEngine.System
 {
-    public interface IEngine
+    internal interface IEngine
     {
-        public void StartCore();
-        public void RunPlayMode();
-        public void StopPlayMode();
+        public static abstract void StartCore();
+        public static abstract ICore GetCore();
+        public static abstract void RunPlayMode();
+        public static abstract void StopPlayMode();
     }
 }

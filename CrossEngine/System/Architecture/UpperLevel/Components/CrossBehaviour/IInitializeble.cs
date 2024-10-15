@@ -1,8 +1,8 @@
-﻿namespace CrossEngine
+﻿namespace CrossEngine.System
 {
     public interface IInitializeble
     {
-        public event Action? OnInitialized;
+        public abstract event Action? OnInitialized;
         public bool isInitialized { get; }
 
         public void OnCreate();

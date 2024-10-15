@@ -1,11 +1,10 @@
-﻿namespace CrossEngine
+﻿namespace CrossEngine.System
 {
-    public class CrossException : Exception
+    internal class CrossException : Exception
     {
         public CrossException(string? message) : base(message)
         {
             Console.ForegroundColor = ConsoleColor.Red;
         }
-
     }
 }

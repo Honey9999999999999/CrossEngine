@@ -1,6 +1,8 @@
-﻿namespace CrossEngine.System.Architecture.Scene
+﻿using CrossEngine.System;
+
+namespace CrossEngine
 {
-    internal sealed class SceneManager : SceneManagerBase
+    public sealed class SceneManager : SceneManagerBase
     {
     }
 }

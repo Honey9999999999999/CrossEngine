@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-namespace CrossEngine.System.Arhitecture.Core
+namespace CrossEngine.System.Core
 {
     public abstract class CoreManagerBase
     {
@@ -31,7 +31,7 @@ namespace CrossEngine.System.Arhitecture.Core
         public CoreManagerBase()
         {
             _coreConfigsMap = [];
-            currentConfig = Engine.instance.currentConfig;
+            currentConfig = Engine.currentConfig;
         }
 
         public abstract void InitCoreComponentsConfigMap();

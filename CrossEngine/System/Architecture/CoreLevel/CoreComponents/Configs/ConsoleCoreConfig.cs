@@ -1,6 +1,4 @@
-﻿using CrossEngine.System.Architecture.Scene;
-
-namespace CrossEngine.System.Arhitecture.Core
+﻿namespace CrossEngine.System.Core
 {
     public class ConsoleCoreConfig : CoreComponentsConfig
     {
@@ -9,6 +7,7 @@ namespace CrossEngine.System.Arhitecture.Core
             _coreComponents = new();
 
             CreateComponent<SceneManager>();
+            CreateComponent<Input>();
 
             return _coreComponents;
         }

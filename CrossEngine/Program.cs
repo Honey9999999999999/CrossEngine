@@ -2,22 +2,20 @@
 using CrossEngine.Objects;
 using CrossEngine.Render;
 using CrossEngine.System;
-using CrossEngine.System.Architecture.Scene;
 using System.Collections;
 using System.Numerics;
 
 Camera camera = new();
-Engine engine = new();
-engine.StartCore();
-engine.RunPlayMode();
+new Engine();
+Engine.StartCore();
+//Engine.RunPlayMode();
 
 GameObject starter = new();
-
-SceneManager.instance.GetActiveScene().AddRootObject(starter);
+SceneManager.GetActiveScene().AddRootObject(starter);
 
 // starter.StartCoroutine(Hi());
 starter.StartCoroutine(Render());
-//starter.StartCoroutine(Input());
+starter.StartCoroutine(InputRoutine());
 //starter.StartCoroutine(Stop());
 
 IEnumerator Hi()
@@ -33,7 +31,7 @@ IEnumerator Hi()
 IEnumerator Stop()
 {
     yield return new WaitForSeconds(4d);
-    engine.StopPlayMode();
+    Engine.StopPlayMode();
 }
 
 IEnumerator Render()
@@ -47,7 +45,12 @@ IEnumerator Render()
     Renderer renderer = new(screen, ref camera);
 
     Sphere sphere = new();
+    Sphere sphere1 = new();
+
+    Vector3 pos = sphere.Transform.Position;
     // sphere.Transform.Position = -Vector3.UnitZ * 5;
+
+    sphere1.Transform.Position = new Vector3(3, 0, 0);
 
     DateTime start = DateTime.UtcNow;
     int frames = 0;
@@ -55,8 +58,9 @@ IEnumerator Render()
     {
         Console.Title = $"FPS: {-1d / (start - (start = DateTime.UtcNow)).TotalSeconds:0}";
         sphere.Transform.Scale = Vector3.One * (MathF.Cos(frames++ * 0.01f) * 0.5f + 1);
+        sphere.Transform.Position = pos + new Vector3(1, 0, 0) * (MathF.Sin(frames++ * 0.01f));
 
-        ConsoleOutput.Write(renderer.Render([sphere]));
+        ConsoleOutput.Write(renderer.Render([sphere, sphere1]));
 
         Console.SetCursorPosition(0, 0);
         Console.Write(Debug.Tree.FromObject(sphere, Debug.Tree.Config.PublicFields));
@@ -68,24 +72,17 @@ IEnumerator Render()
     }
 }
 
-IEnumerator Input()
+IEnumerator InputRoutine()
 {
     while (true)
     {
-        switch (Console.ReadKey().Key)
+        if (Input.GetKeyDown(ConsoleKey.D))
         {
-            case ConsoleKey.LeftArrow:
-                camera.Transform.Rotation -= Vector3.UnitZ * 0.01f;
-                break;
-            case ConsoleKey.RightArrow:
-                camera.Transform.Rotation += Vector3.UnitZ * 0.01f;
-                break;
-            case ConsoleKey.UpArrow:
-                camera.Transform.Rotation += Vector3.UnitX * 0.01f;
-                break;
-            case ConsoleKey.DownArrow:
-                camera.Transform.Rotation -= Vector3.UnitX * 0.01f;
-                break;
+            camera.Transform.Rotation += Vector3.UnitZ * 0.01f;
+        }
+        if (Input.GetKeyDown(ConsoleKey.A))
+        {
+            camera.Transform.Rotation -= Vector3.UnitZ * 0.01f;
         }
         yield return null;
     }

@@ -118,19 +118,19 @@ namespace CrossEngine
             private static string AttributesToString(MemberInfo member) => (member switch
             {
                 ConstructorInfo info => $"{info.Attributes:F}",
-                PropertyInfo info    => $"{info.Attributes:F}",
-                MethodInfo info      => $"{info.Attributes:F}",
-                FieldInfo info       => $"{info.Attributes:F}",
-                EventInfo info       => $"{info.Attributes:F}",
-                TypeInfo info        => $"{info.Attributes:F}",
+                PropertyInfo info => $"{info.Attributes:F}",
+                MethodInfo info => $"{info.Attributes:F}",
+                FieldInfo info => $"{info.Attributes:F}",
+                EventInfo info => $"{info.Attributes:F}",
+                TypeInfo info => $"{info.Attributes:F}",
                 _ => string.Empty
             }).Replace(",", string.Empty);
 
             private static string ParametersToString(MemberInfo member) => string.Join(", ", (member switch
             {
                 ConstructorInfo info => info.GetParameters(),
-                PropertyInfo info    => info.GetIndexParameters(),
-                MethodInfo info      => info.GetParameters(),
+                PropertyInfo info => info.GetIndexParameters(),
+                MethodInfo info => info.GetParameters(),
                 _ => null
             })?.Select(p => $"{p.ParameterType.Name} {p.Name}") ?? []);
 

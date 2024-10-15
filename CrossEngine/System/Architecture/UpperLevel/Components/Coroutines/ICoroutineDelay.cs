@@ -1,6 +1,6 @@
 ﻿namespace CrossEngine
 {
-    public  interface ICoroutineDelay
+    public interface ICoroutineDelay
     {
         public bool Ready { get; }
     }

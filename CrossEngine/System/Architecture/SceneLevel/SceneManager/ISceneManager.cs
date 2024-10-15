@@ -1,17 +1,23 @@
-﻿namespace CrossEngine.System.Architecture.Scene
+﻿namespace CrossEngine.System
 {
     internal interface ISceneManager
     {
-        public event Action? OnSceneLoaded;
-        public event Action? OnSceneUpLoaded;
+        public static abstract event Action? OnSceneStarted;
+        public static abstract event Action? OnSceneStoped;
+        public static abstract event Action? OnSceneLoaded;
 
-        public int sceneCount { get; }
+        public static int sceneCount { get; }
 
-        public void CreateScene(string name);
-        public IScene GetActiveScene();
-        public IScene GetSceneAt(int index);
-        public IScene GetSceneByName(string name);
-        public void LoadScene(int index);
-        public void LoadScene(string name);
+        public static abstract void CreateScene(string name);
+
+        public static abstract SceneBase GetActiveScene();
+        public static abstract SceneBase GetSceneAt(int index);
+        public static abstract SceneBase GetSceneByName(string name);
+
+        public static abstract void StartActiveScene();
+
+        public static abstract void LoadScene(SceneBase scene);
+        public static abstract void LoadScene(int index);
+        public static abstract void LoadScene(string name);
     }
 }

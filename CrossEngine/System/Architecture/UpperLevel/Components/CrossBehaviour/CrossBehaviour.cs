@@ -3,14 +3,19 @@ using System.Collections;
 
 namespace CrossEngine
 {
-    public abstract class CrossBehaviour : Initializeble, ICrossBehaviour, ICoroutineble
+    public abstract class CrossBehaviour : ICrossBehaviour, ICoroutineble
     {
         private Dictionary<Type, ICrossBehaviour> components;
 
         public bool enabled => _enabled;
+
+        public bool isInitialized => throw new NotImplementedException();
+
         private bool _enabled;
 
         private List<IEnumerator> _routines;
+
+        public event Action? OnInitialized;
 
         public CrossBehaviour()
         {
@@ -19,11 +24,21 @@ namespace CrossEngine
             _enabled = true;
         }
 
+        public void OnCreate()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Initialize()
+        {
+            throw new NotImplementedException();
+        }
+
         public virtual void Awake() { }
         public void OnEnable() { }
         public virtual void Start() { }
 
-        public virtual void Update() 
+        public virtual void Update()
         {
 
             foreach (var routine in _routines)
@@ -37,14 +52,14 @@ namespace CrossEngine
 
         public void OnApplicationQuit() { }
         public void OnDisable() { }
-        public void OnDestroy() { }        
+        public void OnDestroy() { }
 
 
         public Coroutine StartCoroutine(IEnumerator routine)
         {
-            void Add() => _routines.Add(routine);
+            void Start() => _routines.Add(routine);
 
-            Engine.instance.coreManager.core.AddTask(Add);
+            Engine.GetCore().CoreRequiest(Start);
             return Coroutine.CreateCoroutine(routine);
         }
 
@@ -76,6 +91,6 @@ namespace CrossEngine
 
                 return false;
             }
-        }
+        }       
     }
 }

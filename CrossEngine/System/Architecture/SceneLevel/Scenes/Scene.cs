@@ -1,6 +1,6 @@
-﻿namespace CrossEngine.System.Architecture.Scene
+﻿namespace CrossEngine.System
 {
-    internal class Scene : SceneBase
+    public sealed class Scene : SceneBase
     {
         public Scene(string name) : base(name)
         {

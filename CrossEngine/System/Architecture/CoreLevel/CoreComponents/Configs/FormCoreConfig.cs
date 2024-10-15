@@ -1,4 +1,4 @@
-﻿namespace CrossEngine.System.Arhitecture.Core
+﻿namespace CrossEngine.System.Core
 {
     public class FormCoreConfig : CoreComponentsConfig
     {

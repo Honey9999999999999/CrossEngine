@@ -1,40 +1,52 @@
 ﻿using System.Collections;
 
-namespace CrossEngine.System.Architecture.Scene
+namespace CrossEngine.System
 {
-    internal abstract class SceneManagerBase : Initializeble, ISceneManager
+    public abstract class SceneManagerBase : CoreComponent<SceneManagerBase>, ISceneManager
     {
-        public event Action? OnSceneLoaded;
-        public event Action? OnSceneUpLoaded;
+        public static event Action? OnSceneStarted;
+        public static event Action? OnSceneStoped;
 
-        public static SceneManagerBase? instance;
+        public static event Action? OnSceneLoaded;
 
         public int sceneCount => _sceneConfigsMap.Values.Count;
 
         private Dictionary<string, SceneBase> _sceneConfigsMap;
 
-        private IScene? _activeScene;
+        private SceneBase? _activeScene;
 
-        public SceneManagerBase()
+        protected SceneManagerBase()
         {
-            if (instance != null)
-            {
-                throw new CrossException("Scene manager already was created.");
-            }
-
             _sceneConfigsMap = [];
-            instance = this;
         }
 
         public override void OnCreate()
         {
-            
+            Engine.GetCore().OnUpdateStarted += StartActiveScene;
+            Engine.GetCore().OnUpdateStoped += StopActiveScene;
+
+            base.OnCreate();
         }
 
-        public void CreateScene(string name)
+        public override void Initialize()
         {
-            _sceneConfigsMap[name] = new Scene(name);
+            if(_sceneConfigsMap.Count < 1)
+            {
+                CreateScene("Default Scene");
+                CrossMessager.PrintWarningMessage("Emergency create scene with name 'Default Scene' is Done.");
+            }
+
+            _activeScene = _sceneConfigsMap.Values.ToArray()[0];
+
+            base.Initialize();
         }
+
+        public static void CreateScene(string name)
+        {
+            _instance._sceneConfigsMap[name] = new Scene(name);
+        }
+
+
 
         internal void SetIndexes()
         {
@@ -44,96 +56,102 @@ namespace CrossEngine.System.Architecture.Scene
             }
         }
 
-        public IScene GetActiveScene()
+
+
+        public static SceneBase GetActiveScene()
         {
-            if (_activeScene == null)
+            if (_instance._activeScene == null)
             {
                 throw new CrossException("Scene is not loaded!");
             }
 
-            return _activeScene;
+            return _instance._activeScene;
         }
 
-        public IScene GetSceneAt(int index)
+
+
+        public static SceneBase GetSceneAt(int index)
         {
-            return _sceneConfigsMap.Values.ToArray()[index];
+            return _instance._sceneConfigsMap.Values.ToArray()[index];
         }
-
-        public IScene GetSceneByName(string name)
+        public static SceneBase GetSceneByName(string name)
         {
-            return _sceneConfigsMap[name];
+            return _instance._sceneConfigsMap[name];
         }
 
-        public void LoadScene(int index)
+
+
+        public static void LoadScene(int index)
         {
             LoadScene(GetSceneAt(index));
         }
-
-        public void LoadScene(string name)
+        public static void LoadScene(string name)
         {
             LoadScene(GetSceneByName(name));
         }
-
-        private void LoadScene(IScene scene)
+        public static void LoadScene(SceneBase scene)
         {
-            UploadScene();
-
-            IEnumerator loadSceneRoutine = LoadSceneRoutine(scene);
-            while (loadSceneRoutine.MoveNext()) ;
-
-            _activeScene = scene;
+            _instance._activeScene = scene;
 
             OnSceneLoaded?.Invoke();
         }
 
-        private IEnumerator LoadSceneRoutine(IScene scene)
-        {
-            List<CrossBehaviour> rootGAmeObjects = scene.GetRootGameObjects();
 
-            foreach (var gameObject in rootGAmeObjects)
+
+        public static void StartActiveScene()
+        {
+            IEnumerator loadSceneRoutine = _instance.StartSceneRoutine(GetActiveScene());
+            while (loadSceneRoutine.MoveNext()) ;
+
+            OnSceneStarted?.Invoke();
+        }
+
+        private IEnumerator StartSceneRoutine(IScene scene)
+        {
+            List<CrossBehaviour> rootGameObjects = scene.GetRootGameObjects();
+
+            foreach (var gameObject in rootGameObjects)
             {
                 gameObject.Awake();
             }
             yield return null;
 
-            foreach (var gameObject in rootGAmeObjects)
+            foreach (var gameObject in rootGameObjects)
             {
                 gameObject.OnEnable();
             }
             yield return null;
 
-            foreach (var gameObject in rootGAmeObjects)
+            foreach (var gameObject in rootGameObjects)
             {
                 gameObject.Start();
             }
             yield return null;
         }
 
-        private void UploadScene()
+        private static void StopActiveScene()
         {
-            if (_activeScene != null)
-            {
-                IEnumerator uploadSceneRoutine = UploadSceneRoutine(_activeScene.GetRootGameObjects());
-                while (uploadSceneRoutine.MoveNext()) ;
+            IEnumerator uploadSceneRoutine = StopSceneRoutine(_instance._activeScene.GetRootGameObjects());
+            while (uploadSceneRoutine.MoveNext()) ;
 
-                OnSceneUpLoaded?.Invoke();
-            }
+            OnSceneStoped?.Invoke();
         }
-        private IEnumerator UploadSceneRoutine(List<CrossBehaviour> rootGAmeObjects)
+
+        private static IEnumerator StopSceneRoutine(List<CrossBehaviour> rootGameObjects)
         {
-            foreach (var gameObject in rootGAmeObjects)
+            foreach (var gameObject in rootGameObjects)
             {
                 gameObject.OnApplicationQuit();
             }
             yield return null;
 
-            foreach (var gameObject in rootGAmeObjects)
+            foreach (var gameObject in rootGameObjects)
             {
                 gameObject.OnDisable();
             }
             yield return null;
 
-            foreach (var gameObject in rootGAmeObjects)
+            foreach (var gameObject in rootGameObjects)
             {
                 gameObject.OnDestroy();
             }
