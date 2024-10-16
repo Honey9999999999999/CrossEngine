@@ -1,4 +1,4 @@
-﻿using CrossEngine.System;
+﻿using CrossEngine.System.Kernel;
 using System.Collections;
 
 namespace CrossEngine
@@ -59,7 +59,7 @@ namespace CrossEngine
         {
             void Start() => _routines.Add(routine);
 
-            Engine.GetCore().CoreRequiest(Start);
+            Core.CoreRequiest(Start);
             return Coroutine.CreateCoroutine(routine);
         }
 

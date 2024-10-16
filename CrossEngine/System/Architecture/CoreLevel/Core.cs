@@ -1,14 +1,14 @@
 ﻿using System.Collections;
 
-namespace CrossEngine.System.Core
+namespace CrossEngine.System.Kernel
 {
-    internal class Core : ICore
+    internal class Core : Singleton<Core>
     {
-        public event Action? OnInitialized;
-        public event Action? OnUpdateStarted;
-        public event Action? OnPreUpdate;
-        public event Action? OnLateUpdate;
-        public event Action? OnUpdateStoped;
+        public static event Action? OnInitialized;
+        public static event Action? OnUpdateStarted;
+        public static event Action? OnPreUpdate;
+        public static event Action? OnLateUpdate;
+        public static event Action? OnUpdateStoped;
 
         public bool isInitialized => _isInitialized;
         public bool isRunPlayMode => _isRunPlayMode;
@@ -16,48 +16,27 @@ namespace CrossEngine.System.Core
         private bool _isRunPlayMode;
         private bool _isInitialized;
 
-        private CoreComponents _coreBase;
         private Thread update;
 
-        public Core(CoreComponentsConfig _coreConfig)
+        public Core()
         {
-            _coreBase = new CoreComponents(_coreConfig);
             update = new(Update);
-        }
+        }        
 
-        public void InitializeCore()
+        public static void RunPlayMode()
         {
-            IEnumerator routine = InitializeCoreRoutine();
-
-            while (routine.MoveNext()) ;
-        }
-
-        private IEnumerator InitializeCoreRoutine()
-        {
-            _coreBase.SendOnCreateToAllCoreComponents();
-            yield return null;
-
-            _coreBase.SendInitializeToAllCoreComponents();
-            yield return null;
-
-            OnInitialized?.Invoke();
-            _isInitialized = true;
-        }
-
-        public void RunPlayMode()
-        {
-            RunThreadUpdate();
-            _isRunPlayMode = true;
+            instance.RunThreadUpdate();
+            instance._isRunPlayMode = true;
         }
 
         private void RunThreadUpdate()
         {
-            update.Start();
+            update.Start();            
         }
 
-        public void CoreRequiest(Action action)
+        public static void CoreRequiest(Action action)
         {
-            if (_isRunPlayMode)
+            if (instance._isRunPlayMode)
             {
                 void Task()
                 {
@@ -81,7 +60,7 @@ namespace CrossEngine.System.Core
             OnUpdateStarted?.Invoke();
 
             while (_isRunPlayMode)
-            {
+            {                
                 OnPreUpdate?.Invoke();
 
                 if (fixedUpdateRoutine.Current is ICoroutineDelay delay && !delay.Ready) continue;
@@ -122,9 +101,9 @@ namespace CrossEngine.System.Core
             }
         }
 
-        public void StopRunPlayMode()
+        public static void StopRunPlayMode()
         {
-            _isRunPlayMode = false;
+            instance._isRunPlayMode = false;
         }
     }
 }

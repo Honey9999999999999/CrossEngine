@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using CrossEngine.System.Kernel;
+using System.Collections;
 
 namespace CrossEngine.System
 {
@@ -22,8 +23,8 @@ namespace CrossEngine.System
 
         public override void OnCreate()
         {
-            Engine.GetCore().OnUpdateStarted += StartActiveScene;
-            Engine.GetCore().OnUpdateStoped += StopActiveScene;
+            Core.OnUpdateStarted += StartActiveScene;
+            Core.OnUpdateStoped += StopActiveScene;
 
             base.OnCreate();
         }
@@ -43,7 +44,7 @@ namespace CrossEngine.System
 
         public static void CreateScene(string name)
         {
-            _instance._sceneConfigsMap[name] = new Scene(name);
+            instance._sceneConfigsMap[name] = new Scene(name);
         }
 
 
@@ -60,23 +61,23 @@ namespace CrossEngine.System
 
         public static SceneBase GetActiveScene()
         {
-            if (_instance._activeScene == null)
+            if (instance._activeScene == null)
             {
                 throw new CrossException("Scene is not loaded!");
             }
 
-            return _instance._activeScene;
+            return instance._activeScene;
         }
 
 
 
         public static SceneBase GetSceneAt(int index)
         {
-            return _instance._sceneConfigsMap.Values.ToArray()[index];
+            return instance._sceneConfigsMap.Values.ToArray()[index];
         }
         public static SceneBase GetSceneByName(string name)
         {
-            return _instance._sceneConfigsMap[name];
+            return instance._sceneConfigsMap[name];
         }
 
 
@@ -91,7 +92,7 @@ namespace CrossEngine.System
         }
         public static void LoadScene(SceneBase scene)
         {
-            _instance._activeScene = scene;
+            instance._activeScene = scene;
 
             OnSceneLoaded?.Invoke();
         }
@@ -100,7 +101,7 @@ namespace CrossEngine.System
 
         public static void StartActiveScene()
         {
-            IEnumerator loadSceneRoutine = _instance.StartSceneRoutine(GetActiveScene());
+            IEnumerator loadSceneRoutine = instance.StartSceneRoutine(GetActiveScene());
             while (loadSceneRoutine.MoveNext()) ;
 
             OnSceneStarted?.Invoke();
@@ -131,7 +132,7 @@ namespace CrossEngine.System
 
         private static void StopActiveScene()
         {
-            IEnumerator uploadSceneRoutine = StopSceneRoutine(_instance._activeScene.GetRootGameObjects());
+            IEnumerator uploadSceneRoutine = StopSceneRoutine(instance._activeScene.GetRootGameObjects());
             while (uploadSceneRoutine.MoveNext()) ;
 
             OnSceneStoped?.Invoke();

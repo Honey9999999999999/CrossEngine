@@ -1,39 +1,30 @@
-﻿using CrossEngine.System.Core;
+﻿using CrossEngine.System.Kernel;
 
 namespace CrossEngine.System
 {
-    internal sealed class Engine : Singleton<Engine>, IEngine
+    internal sealed class Engine : Singleton<Engine>
     {
-        public CoreManagerBase coreManager { get; private set; }
+        public static TypeConfig currentConfig { get; private set; }
 
-        public static TypeConfigs currentConfig { get; private set; }
-
-        public Engine() : this(TypeConfigs.ConsoleCore) { }
-        public Engine(TypeConfigs type)
+        public Engine()
         {
-            currentConfig = type;
-            coreManager = new CoreManagerExample();
+            new CoreManager();
+            new CoreLoader();
         }
 
-        public static void StartCore()
+        public static void StartCore(TypeConfig config)
         {
-            _instance.coreManager.InitCoreComponentsConfigMap();
-
-            _instance.coreManager.LoadCoreEngineWithCurrentConfig();
-        }
-
-        public static ICore GetCore()
-        {
-            return _instance.coreManager.core;
+            CoreManager.LoadCoreWithConfig(config);
+            currentConfig = config;
         }
 
         public static void RunPlayMode()
         {
-            _instance.coreManager.core.RunPlayMode();
+            Core.RunPlayMode();
         }
         public static void StopPlayMode()
         {
-            _instance.coreManager.core.StopRunPlayMode();
+            Core.StopRunPlayMode();
         }
     }
 }

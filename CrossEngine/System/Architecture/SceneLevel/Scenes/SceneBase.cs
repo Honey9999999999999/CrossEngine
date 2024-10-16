@@ -1,4 +1,6 @@
-﻿namespace CrossEngine.System
+﻿using CrossEngine.System.Kernel;
+
+namespace CrossEngine.System
 {
     public abstract class SceneBase : IScene
     {
@@ -28,7 +30,7 @@
         {
             void Add() => _rootObjects.Add(rootObject);
 
-            Engine.GetCore().CoreRequiest(Add);
+            Core.CoreRequiest(Add);
         }
     }
 }

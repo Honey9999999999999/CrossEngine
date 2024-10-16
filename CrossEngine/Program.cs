@@ -2,16 +2,47 @@
 using CrossEngine.Objects;
 using CrossEngine.Render;
 using CrossEngine.System;
+using CrossEngine.System.Kernel;
 using System.Collections;
 using System.Numerics;
+using System.Text;
+
+using System.Runtime.InteropServices;
+
+//[DllImport("user32.dll")]
+//static extern int MessageBox(IntPtr hWnd, String text, String caption, int options);
+
+//MessageBox(IntPtr.Zero, "Hello", "My Message", 0);
+
+
+//[DllImport("user32.dll")]
+//static extern short GetAsyncKeyState(int keys);
+
+//if (GetAsyncKeyState(53) != 0)
+//    MessageBox(IntPtr.Zero, "клавиши нажаты", "клавиши нажаты", 0);
+//else
+//{
+//    MessageBox(IntPtr.Zero, ":c", ":c", 0);
+//}
+
+Console.WriteLine(Thread.CurrentThread.ManagedThreadId);
 
 Camera camera = new();
 new Engine();
-Engine.StartCore();
-//Engine.RunPlayMode();
+Engine.StartCore(TypeConfig.ConsoleCore);
+Engine.RunPlayMode();
+
+//Stream inputStream = Console.OpenStandardInput();
+//byte[] bytes = new byte[100];
+//Console.WriteLine("To decode, type or paste the UTF8 encoded string and press enter:");
+//Console.WriteLine("(Example: \"M+APw-nchen ist wundervoll\")");
+//int outputLength = inputStream.Read(bytes, 0, 100);
+//char[] chars = Encoding.UTF8.GetChars(bytes, 0, outputLength);
+//Console.WriteLine($"Decoded string : {new string(chars)}");
 
 GameObject starter = new();
 SceneManager.GetActiveScene().AddRootObject(starter);
+
 
 // starter.StartCoroutine(Hi());
 starter.StartCoroutine(Render());
