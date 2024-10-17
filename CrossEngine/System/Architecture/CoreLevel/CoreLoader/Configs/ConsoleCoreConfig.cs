@@ -4,6 +4,7 @@
     {
         protected override void CreateAllCoreComponents()
         {
+            CreateComponent<FileManager>();
             CreateComponent<SceneManager>();
             CreateComponent<Input>();
         }

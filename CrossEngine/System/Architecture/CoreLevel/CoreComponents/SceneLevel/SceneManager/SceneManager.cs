@@ -20,17 +20,11 @@ namespace CrossEngine.System
 
         private const string DICTIONARY_MAP_NAME = "ScenesMap";
 
-        XmlSerializer xmlSerializer = new XmlSerializer(typeof(Scene));
-        XmlSerializer xmlSerializer1 = new XmlSerializer(typeof(List<string>));
-
         public SceneManager()
         {
-            string curFile = @"d:\Projects\CrossEngine\CrossEngine\bin\Debug\net8.0\ScenesMap.xml";
-            if (File.Exists(curFile))
+            if (FileManager.IsPathExist(SavePlace.Scenes, DICTIONARY_MAP_NAME))
             {
-                using FileStream fs1 = new FileStream($"{DICTIONARY_MAP_NAME}.xml", FileMode.OpenOrCreate);
-
-                _scenesMap = instance.xmlSerializer1.Deserialize(fs1) as List<string>;
+                _scenesMap = FileManager.LoadFromXml<List<string>>(SavePlace.Scenes, DICTIONARY_MAP_NAME);
             }
             else
             {
@@ -59,6 +53,8 @@ namespace CrossEngine.System
             base.Initialize();
         }
 
+
+
         public static void CreateScene(string name)
         {
             Scene scene = new()
@@ -67,26 +63,12 @@ namespace CrossEngine.System
                 index = instance._scenesMap.Count
             };
 
-            using FileStream fs = new FileStream($"{name}.xml", FileMode.OpenOrCreate);
-            instance.xmlSerializer.Serialize(fs, scene);
+            FileManager.SaveInXml(scene, name, SavePlace.Scenes);
 
             instance._scenesMap.Add(name);
 
-            using FileStream fs1 = new FileStream($"{DICTIONARY_MAP_NAME}.xml", FileMode.OpenOrCreate);
-            instance.xmlSerializer1.Serialize(fs1, instance._scenesMap);
+            FileManager.SaveInXml(instance._scenesMap, DICTIONARY_MAP_NAME, SavePlace.Scenes);
         }
-
-
-
-
-
-        //internal void SetIndexes()
-        //{
-        //    for (int i = 0; i < _sceneConfigsMap.Values.Count; i++)
-        //    {
-        //        _sceneConfigsMap.Values.ToArray()[i].SetIndex(i);
-        //    }
-        //}
 
 
 
@@ -99,8 +81,6 @@ namespace CrossEngine.System
 
             return instance._activeScene;
         }
-
-
 
         public static Scene GetSceneAt(int index)
         {
@@ -124,10 +104,9 @@ namespace CrossEngine.System
             OnSceneLoaded?.Invoke();
         }
 
-        private Scene GetScene(string path)
+        private Scene GetScene(string name)
         {
-            using FileStream fs = new FileStream($"{path}.xml", FileMode.OpenOrCreate);
-            return instance.xmlSerializer.Deserialize(fs) as Scene;
+            return FileManager.LoadFromXml<Scene>(SavePlace.Scenes, name);
         }
 
 
