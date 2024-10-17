@@ -1,4 +1,4 @@
-﻿namespace CrossEngine.System.Architecture.Scene
+﻿namespace CrossEngine.System
 {
     internal class SceneConfigBase
     {

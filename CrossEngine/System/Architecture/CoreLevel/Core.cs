@@ -76,7 +76,7 @@ namespace CrossEngine.System.Kernel
 
         private IEnumerator UpdateRoutine()
         {
-            List<CrossBehaviour> rootGameObjects = SceneManagerBase.GetActiveScene().GetRootGameObjects();
+            List<CrossBehaviour> rootGameObjects = SceneManager.GetActiveScene().GetRootGameObjects();
 
             while (true)
             {
@@ -89,7 +89,7 @@ namespace CrossEngine.System.Kernel
         }
         private IEnumerator FixedUpdateRoutine()
         {
-            List<CrossBehaviour> rootGAmeObjects = SceneManagerBase.GetActiveScene().GetRootGameObjects();
+            List<CrossBehaviour> rootGAmeObjects = SceneManager.GetActiveScene().GetRootGameObjects();
 
             while (true)
             {

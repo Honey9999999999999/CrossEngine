@@ -5,9 +5,7 @@ using CrossEngine.System;
 using CrossEngine.System.Kernel;
 using System.Collections;
 using System.Numerics;
-using System.Text;
-
-using System.Runtime.InteropServices;
+using SharpHook.Native;
 
 //[DllImport("user32.dll")]
 //static extern int MessageBox(IntPtr hWnd, String text, String caption, int options);
@@ -24,8 +22,6 @@ using System.Runtime.InteropServices;
 //{
 //    MessageBox(IntPtr.Zero, ":c", ":c", 0);
 //}
-
-Console.WriteLine(Thread.CurrentThread.ManagedThreadId);
 
 Camera camera = new();
 new Engine();
@@ -44,9 +40,9 @@ GameObject starter = new();
 SceneManager.GetActiveScene().AddRootObject(starter);
 
 
-// starter.StartCoroutine(Hi());
-starter.StartCoroutine(Render());
-starter.StartCoroutine(InputRoutine());
+starter.StartCoroutine(Hi());
+//starter.StartCoroutine(Render());
+//starter.StartCoroutine(InputRoutine());
 //starter.StartCoroutine(Stop());
 
 IEnumerator Hi()
@@ -107,11 +103,11 @@ IEnumerator InputRoutine()
 {
     while (true)
     {
-        if (Input.GetKeyDown(ConsoleKey.D))
+        if (Input.GetKey(KeyCode.VcD))
         {
             camera.Transform.Rotation += Vector3.UnitZ * 0.01f;
         }
-        if (Input.GetKeyDown(ConsoleKey.A))
+        if (Input.GetKey(KeyCode.VcA))
         {
             camera.Transform.Rotation -= Vector3.UnitZ * 0.01f;
         }
