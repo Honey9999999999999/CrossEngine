@@ -2,13 +2,13 @@
 
 namespace CrossEngine
 {
-    public class GameObject(string name) : object
+    public class GameObject : object
     {
         internal static GameObject? gameObject;
 
         public bool Enabled { get; set; } = true;
-        public string Name { get; set; } = name;
-        public string Tag { get; set; }
+        public string Name { get; set; }
+        public string Tag { get; set; } = "Default";
 
         public Transform Transform { get; } = new();
 
@@ -16,7 +16,16 @@ namespace CrossEngine
 
 
 
-        public GameObject() : this("GameObject") { }
+        public GameObject()
+        {
+            Name = GetType().Name;
+            SceneManager.GetActiveScene().AddRootObject(this);
+        }
+        public GameObject(string name)
+        {
+            Name = name;
+            SceneManager.GetActiveScene().AddRootObject(this);
+        }
 
 
 

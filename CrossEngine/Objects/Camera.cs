@@ -1,7 +1,7 @@
 ﻿namespace CrossEngine
 {
-    public class Camera(float rayLength = 1) : GameObject
+    public class Camera : GameObject
     {
-        public float RayLength = rayLength;
+        public float RayLength = 1;      
     }
 }
