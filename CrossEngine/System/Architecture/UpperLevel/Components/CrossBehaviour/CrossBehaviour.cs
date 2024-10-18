@@ -11,12 +11,7 @@ namespace CrossEngine
             get => base.Enabled; set
             {
                 base.Enabled = value;
-                if (Core.isRunPlayMode && value)
-                {
-                    if (!isBeAwake) Awake();
-                    if (!isBeOnEnable) OnEnable();
-                    if (!isBeStart) Start();
-                }
+                TryInitialize();
             }
         }
 
@@ -28,12 +23,23 @@ namespace CrossEngine
 
 
 
-        public CrossBehaviour()
+        public CrossBehaviour() : base()
         {
             _routines = [];
+            GameObject.OnEnable += TryInitialize;
         }
 
 
+
+        private void TryInitialize()
+        {
+            if (Core.isRunPlayMode && GameObject.Enabled && Enabled)
+            {
+                if (!isBeAwake) Awake();
+                if (!isBeOnEnable) OnEnable();
+                if (!isBeStart) Start();
+            }
+        }
 
         public virtual void Awake() => isBeAwake = true;
         public virtual void OnEnable() => isBeOnEnable = true;
@@ -81,6 +87,6 @@ namespace CrossEngine
         public bool TryGetComponent<TComponent>(out TComponent? crossBehaviour) where TComponent : Component, new()
         {
             return GameObject.TryGetComponent<TComponent>(out crossBehaviour);
-        }       
+        }   
     }
 }

@@ -122,7 +122,7 @@ namespace CrossEngine.System
 
         private IEnumerator StartSceneRoutine(Scene scene)
         {
-            GameObject[] rootGameObjects = scene.GetRootGameObjects().ToArray();
+            GameObject[] rootGameObjects = [.. scene.GetRootGameObjects()];
 
             foreach (var gameObject in rootGameObjects)
             {
