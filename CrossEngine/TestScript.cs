@@ -16,6 +16,7 @@ namespace CrossEngine
             base.Start();
 
             camera = new();
+            camera.AddComponent<TestScript2>();
 
             //StartCoroutine(Hi());
             StartCoroutine(Render());

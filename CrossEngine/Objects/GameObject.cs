@@ -1,18 +1,35 @@
 ﻿using CrossEngine.System;
+using CrossEngine.System.Kernel;
 
 namespace CrossEngine
 {
     public class GameObject : object
     {
         internal static GameObject? gameObject;
+        internal Action OnEnable;
 
-        public bool Enabled { get; set; } = true;
+        public bool Enabled {
+            get
+            {
+                return _enabled;
+            }
+            set 
+            {
+                _enabled = value;
+
+                if(Core.isRunPlayMode && Enabled)
+                {
+                    OnEnable?.Invoke();
+                }                
+            } 
+        }
         public string Name { get; set; }
         public string Tag { get; set; } = "Default";
 
         public Transform Transform { get; } = new();
 
         private readonly Dictionary<Type, Component> _componentsMap = [];
+        private bool _enabled = true;
 
         public GameObject()
         {

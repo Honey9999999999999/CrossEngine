@@ -2,6 +2,7 @@
 using CrossEngine.System;
 using CrossEngine.System.Kernel;
 
+
 new Engine();
 Engine.StartCore(TypeConfig.ConsoleCore);
 

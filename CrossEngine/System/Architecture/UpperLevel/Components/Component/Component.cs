@@ -2,7 +2,7 @@
 {
     public abstract class Component
     {
-        public bool Enabled { get; }
+        public virtual bool Enabled { get; set; } = true;
 
         public GameObject GameObject { get; }
         public Transform Transform { get; }
@@ -11,9 +11,9 @@
         {
             GameObject gameObject = GameObject.gameObject ?? throw new CrossException("Use 'GameObject.AddComponent<>()' for creating new Component!!!");
 
-            Enabled = gameObject.Enabled;
             GameObject = gameObject;
-            Transform = gameObject.Transform;
+            Enabled = GameObject.Enabled;
+            Transform = GameObject.Transform;
         }
     }
 }

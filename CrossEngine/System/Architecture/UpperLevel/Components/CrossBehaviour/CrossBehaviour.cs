@@ -6,20 +6,44 @@ namespace CrossEngine
 {
     public abstract class CrossBehaviour : Component, ICoroutineble
     {
+        public override bool Enabled
+        {
+            get => base.Enabled; set
+            {
+                base.Enabled = value;
+                TryInitialize();
+            }
+        }
+
         private List<IEnumerator> _routines;
 
+        private bool isBeAwake;
+        private bool isBeOnEnable;
+        private bool isBeStart;
 
 
-        public CrossBehaviour()
+
+        public CrossBehaviour() : base()
         {
             _routines = [];
+            GameObject.OnEnable += TryInitialize;
         }
 
 
 
-        public virtual void Awake() { }
-        public virtual void OnEnable() { }
-        public virtual void Start() { }
+        private void TryInitialize()
+        {
+            if (Core.isRunPlayMode && GameObject.Enabled && Enabled)
+            {
+                if (!isBeAwake) Awake();
+                if (!isBeOnEnable) OnEnable();
+                if (!isBeStart) Start();
+            }
+        }
+
+        public virtual void Awake() => isBeAwake = true;
+        public virtual void OnEnable() => isBeOnEnable = true;
+        public virtual void Start() => isBeStart = true;
 
 
         public virtual void Update()
@@ -41,9 +65,9 @@ namespace CrossEngine
 
         public Coroutine StartCoroutine(IEnumerator routine)
         {
-            void Start() => _routines.Add(routine);
+            void StartRoutine() => _routines.Add(routine);
 
-            Core.CoreRequiest(Start);
+            Core.CoreRequiest(StartRoutine);
             return Coroutine.CreateCoroutine(routine);
         }
         public void StopCoroutine(Coroutine coroutine)
@@ -63,6 +87,6 @@ namespace CrossEngine
         public bool TryGetComponent<TComponent>(out TComponent? crossBehaviour) where TComponent : Component, new()
         {
             return GameObject.TryGetComponent<TComponent>(out crossBehaviour);
-        }       
+        }   
     }
 }

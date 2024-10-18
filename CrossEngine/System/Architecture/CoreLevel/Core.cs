@@ -11,9 +11,9 @@ namespace CrossEngine.System.Kernel
         public static event Action? OnUpdateStoped;
 
         public bool isInitialized => _isInitialized;
-        public bool isRunPlayMode => _isRunPlayMode;
+        public static bool isRunPlayMode => _isRunPlayMode;
 
-        private bool _isRunPlayMode;
+        private static bool _isRunPlayMode;
         private bool _isInitialized;
 
         private readonly Thread update;
@@ -25,8 +25,8 @@ namespace CrossEngine.System.Kernel
 
         public static void RunPlayMode()
         {
-            instance.RunThreadUpdate();
-            instance._isRunPlayMode = true;
+            _isRunPlayMode = true;
+            instance.RunThreadUpdate();            
         }
 
         private void RunThreadUpdate()
@@ -36,7 +36,7 @@ namespace CrossEngine.System.Kernel
 
         public static void CoreRequiest(Action action)
         {
-            if (instance._isRunPlayMode)
+            if (_isRunPlayMode)
             {
                 void Task()
                 {
@@ -109,7 +109,7 @@ namespace CrossEngine.System.Kernel
 
         public static void StopRunPlayMode()
         {
-            instance._isRunPlayMode = false;
+            _isRunPlayMode = false;
         }
     }
 }
