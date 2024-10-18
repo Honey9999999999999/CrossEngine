@@ -6,16 +6,18 @@ namespace CrossEngine
 {
     public abstract class CrossBehaviour : Component, ICoroutineble
     {
-        public override bool Enabled { get => base.Enabled; set 
-            { 
+        public override bool Enabled
+        {
+            get => base.Enabled; set
+            {
                 base.Enabled = value;
-                if (value)
+                if (Core.isRunPlayMode && value)
                 {
                     if (!isBeAwake) Awake();
                     if (!isBeOnEnable) OnEnable();
                     if (!isBeStart) Start();
                 }
-            }  
+            }
         }
 
         private List<IEnumerator> _routines;
@@ -57,9 +59,9 @@ namespace CrossEngine
 
         public Coroutine StartCoroutine(IEnumerator routine)
         {
-            void Start() => _routines.Add(routine);
+            void StartRoutine() => _routines.Add(routine);
 
-            Core.CoreRequiest(Start);
+            Core.CoreRequiest(StartRoutine);
             return Coroutine.CreateCoroutine(routine);
         }
         public void StopCoroutine(Coroutine coroutine)
