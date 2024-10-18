@@ -3,7 +3,7 @@
     public interface ITaskManager
     {
         public void AddTask(ITask task);
-        public Stack<ITask> GetTasks();
+        public ITask[] GetTasks();
 
         public void RunTasks();
     }

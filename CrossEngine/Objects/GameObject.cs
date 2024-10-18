@@ -14,30 +14,25 @@ namespace CrossEngine
 
         private readonly Dictionary<Type, Component> _componentsMap = [];
 
-
-
         public GameObject()
         {
             Name = GetType().Name;
             SceneManager.GetActiveScene().AddRootObject(this);
         }
-        public GameObject(string name)
-        {
-            Name = name;
-            SceneManager.GetActiveScene().AddRootObject(this);
-        }
 
-
+        public GameObject(string name) : this() { Name = name; }
 
         public void AddComponent<TComponent>() where TComponent : Component, new()
         {
             gameObject = this;
             _componentsMap[typeof(TComponent)] = new TComponent();
         }
+
         public TComponent GetComponent<TComponent>() where TComponent : Component, new()
         {
             return (TComponent)_componentsMap[typeof(TComponent)];
         }
+
         public bool TryGetComponent<TComponent>(out TComponent? crossBehaviour) where TComponent : Component, new()
         {
             if (_componentsMap.ContainsKey(typeof(TComponent)))
@@ -54,11 +49,11 @@ namespace CrossEngine
             }
         }
 
-
         public Component[] GetComponents()
         {
             return [.. _componentsMap.Values];
         }
+
         public T[] GetComponents<T>() where T : Component
         {
             List<T> componentsList = [];

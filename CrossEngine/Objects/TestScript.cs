@@ -63,26 +63,25 @@ namespace CrossEngine
             ConsoleScreen screen = new(240, 60, 8, 4);
             Renderer renderer = new(screen, ref camera);
 
-            Sphere sphere = new();
-            Sphere sphere1 = new();
+            List<Sphere> list = [new(), new(), new()];
 
-            Vector3 pos = sphere.Transform.Position;
+            Vector3 pos = list[0].Transform.Position;
             // sphere.Transform.Position = -Vector3.UnitZ * 5;
 
-            sphere1.Transform.Position = new Vector3(3, 0, 0);
+            list[0].Transform.Position = new Vector3(3, 0, 0);
+            list[1].Transform.Position = new Vector3(0, -15, 0);
 
             DateTime start = DateTime.UtcNow;
             int frames = 0;
             while (true)
             {
                 Console.Title = $"FPS: {-1d / (start - (start = DateTime.UtcNow)).TotalSeconds:0}";
-                sphere.Transform.Scale = Vector3.One * (MathF.Cos(frames++ * 0.01f) * 0.5f + 1);
-                sphere.Transform.Position = pos + new Vector3(1, 0, 0) * (MathF.Sin(frames++ * 0.01f));
+                list[0].Transform.Scale = Vector3.One * (MathF.Cos(frames++ * 0.01f) * 0.5f + 1);
+                list[0].Transform.Position = pos + new Vector3(1, 0, 0) * (MathF.Sin(frames++ * 0.01f));
 
-                ConsoleOutput.Write(renderer.Render([sphere, sphere1]));
+                ConsoleOutput.Write(renderer.Render([.. list]));
 
                 Console.SetCursorPosition(0, 0);
-                Console.Write(Debug.Tree.FromObject(sphere, Debug.Tree.Config.PublicFields));
                 Console.Write(Debug.Tree.FromObject(camera, Debug.Tree.Config.PublicFields));
                 //Console.Write(Debug.Tree.FromObject(camera.Transform.Rotation));
 

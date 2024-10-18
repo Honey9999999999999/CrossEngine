@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using System.Runtime.InteropServices;
 
 using static CrossEngine.Render.ConsoleOutput;
 
@@ -7,7 +8,8 @@ namespace CrossEngine.Render
     public class Renderer
     {
         private char symbol;
-        private readonly char[] gradient = ['`', '.', ';', 'I', 'S', 'O', '%', '&', '@'];
+        private readonly char[] gradient = ['.', '`', ';', 'I', 'S', 'O', '%', '&', '@'];
+        //private readonly char[] gradient = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '@'];
 
         //const float MaxDrawDistance = 9999;
         //const float minShadow = 10;
@@ -50,9 +52,16 @@ namespace CrossEngine.Render
                         hit = hit.Closest(obj.Cast(ray));
 
                     if (i == screen.Width / 2 && j == screen.Height / 2)
-                        _ = "STOP HERE";
+                    {
+                        symbol = 'X';
+                        SetPixel(i, j, ConsoleColor.White);
+                        Console.SetCursorPosition(0, screen.Height - 2);
+                        Console.Write(hit.Distance);
+                        continue;
+                    }
 
-                    float light = Vector3.Dot(hit.Normal, Vector3.UnitZ) / 2 + 0.5f;
+                    float light = hit.Object != null ? Vector3.Dot(hit.Normal, -Vector3.UnitZ) / 2 + 0.5f : 1;
+                    //light = hit.Object == null ? 1 : hit.Distance / 10;
                     symbol = gradient[(int)(light * (gradient.Length - 1))];
 
                     SetPixel(i, j, hit.Object != null ? ConsoleColor.Red : ConsoleColor.DarkBlue);

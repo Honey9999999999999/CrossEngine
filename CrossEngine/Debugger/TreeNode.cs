@@ -39,7 +39,7 @@ namespace CrossEngine
                 public bool FilterByAssembly = true;
 
                 public static readonly Config Default = new() { },
-                    PublicFields = new() { BindingFlags = BindingFlags.Public | BindingFlags.Instance, MemberTypes = MemberTypes.Field };
+                    PublicFields = new() { BindingFlags = BindingFlags.Public | BindingFlags.Instance, MemberTypes = MemberTypes.Field | MemberTypes.Property };
             }
 
             public static Tree FromObject(object obj) => FromObject(obj, Config.Default);
@@ -118,19 +118,19 @@ namespace CrossEngine
             private static string AttributesToString(MemberInfo member) => (member switch
             {
                 ConstructorInfo info => $"{info.Attributes:F}",
-                PropertyInfo info => $"{info.Attributes:F}",
-                MethodInfo info => $"{info.Attributes:F}",
-                FieldInfo info => $"{info.Attributes:F}",
-                EventInfo info => $"{info.Attributes:F}",
-                TypeInfo info => $"{info.Attributes:F}",
+                PropertyInfo info    => $"{info.Attributes:F}",
+                MethodInfo info      => $"{info.Attributes:F}",
+                FieldInfo info       => $"{info.Attributes:F}",
+                EventInfo info       => $"{info.Attributes:F}",
+                TypeInfo info        => $"{info.Attributes:F}",
                 _ => string.Empty
-            }).Replace(",", string.Empty);
+            }).Replace(",", string.Empty).Replace("None", string.Empty);
 
             private static string ParametersToString(MemberInfo member) => string.Join(", ", (member switch
             {
                 ConstructorInfo info => info.GetParameters(),
-                PropertyInfo info => info.GetIndexParameters(),
-                MethodInfo info => info.GetParameters(),
+                PropertyInfo info    => info.GetIndexParameters(),
+                MethodInfo info      => info.GetParameters(),
                 _ => null
             })?.Select(p => $"{p.ParameterType.Name} {p.Name}") ?? []);
 
@@ -152,17 +152,17 @@ namespace CrossEngine
                 PropertyInfo info => $"{info.PropertyType.Name} {info.Name}[{ParametersToString(info)}] {{ " +
                 info switch
                 {
-                    { CanRead: true, CanWrite: true } => "get; set;",   // read and write
-                    { CanRead: true, CanWrite: false } => "get;",       // read only
-                    { CanRead: false, CanWrite: true } => "set;",       // write only
-                    _ => string.Empty                                   // no read, no write
-                } + $" }}".Replace("[] ", string.Empty),
+                    { CanRead: true, CanWrite: true }  => $"{AttributesToString(info.GetMethod)} get; {AttributesToString(info.SetMethod)} set;",   // read and write
+                    { CanRead: true, CanWrite: false } => $"{AttributesToString(info.GetMethod)} get;",       // read only
+                    { CanRead: false, CanWrite: true } => $"{AttributesToString(info.SetMethod)} set;",       // write only
+                    _ => string.Empty                                    // no read, no write
+                } + $" }}".Replace("[] ", string.Empty).Trim(),
 
                 // Class Node
                 TypeInfo info => info switch
                 {
                     { IsValueType: true } => "Struct ",
-                    { IsClass: true } => "Class ",
+                    { IsClass: true }     => "Class ",
                     _ => string.Empty
                 } + info.Name,
 

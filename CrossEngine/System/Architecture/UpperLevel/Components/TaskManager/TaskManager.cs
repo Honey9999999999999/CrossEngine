@@ -2,7 +2,7 @@
 {
     public class TaskManager : ITaskManager
     {
-        private Stack<ITask> _tasks;
+        private Queue<ITask> _tasks;
 
         public TaskManager()
         {
@@ -11,17 +11,17 @@
 
         public void AddTask(ITask task)
         {
-            _tasks.Push(task);
+            _tasks.Enqueue(task);
         }
 
-        public Stack<ITask> GetTasks()
+        public ITask[] GetTasks()
         {
-            return _tasks;
+            return [.. _tasks];
         }
 
         public void RunTasks()
         {
-            while (_tasks.TryPop(out ITask task))
+            while (_tasks.TryDequeue(out ITask task))
             {
                 task.Run();
             }
