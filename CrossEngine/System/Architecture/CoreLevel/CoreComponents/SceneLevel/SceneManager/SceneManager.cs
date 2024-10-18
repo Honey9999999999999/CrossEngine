@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Formats.Tar;
 using System.Xml.Serialization;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace CrossEngine.System
 {
@@ -121,25 +122,33 @@ namespace CrossEngine.System
 
         private IEnumerator StartSceneRoutine(Scene scene)
         {
-            List<CrossBehaviour> rootGameObjects = scene.GetRootGameObjects();
+            List<GameObject> rootGameObjects = scene.GetRootGameObjects();
 
             foreach (var gameObject in rootGameObjects)
             {
-                gameObject.Awake();
+                foreach (var commponent in gameObject.GetComponents<CrossBehaviour>())
+                {
+                    commponent.Awake();
+                }                
             }
             yield return null;
 
             foreach (var gameObject in rootGameObjects)
             {
-                gameObject.OnEnable();
+                foreach (var commponent in gameObject.GetComponents<CrossBehaviour>())
+                {
+                    commponent.OnEnable();
+                }
             }
             yield return null;
 
             foreach (var gameObject in rootGameObjects)
             {
-                gameObject.Start();
+                foreach (var commponent in gameObject.GetComponents<CrossBehaviour>())
+                {
+                    commponent.Start();
+                }
             }
-            yield return null;
         }
 
         private static void StopActiveScene()
@@ -150,25 +159,33 @@ namespace CrossEngine.System
             OnSceneStoped?.Invoke();
         }
 
-        private static IEnumerator StopSceneRoutine(List<CrossBehaviour> rootGameObjects)
+        private static IEnumerator StopSceneRoutine(List<GameObject> rootGameObjects)
         {
             foreach (var gameObject in rootGameObjects)
             {
-                gameObject.OnApplicationQuit();
+                foreach (var commponent in gameObject.GetComponents<CrossBehaviour>())
+                {
+                    commponent.OnApplicationQuit();
+                }
             }
             yield return null;
 
             foreach (var gameObject in rootGameObjects)
             {
-                gameObject.OnDisable();
+                foreach (var commponent in gameObject.GetComponents<CrossBehaviour>())
+                {
+                    commponent.OnDisable();
+                }
             }
             yield return null;
 
             foreach (var gameObject in rootGameObjects)
             {
-                gameObject.OnDestroy();
+                foreach (var commponent in gameObject.GetComponents<CrossBehaviour>())
+                {
+                    commponent.OnDestroy();
+                }
             }
-            yield return null;
         }
     }
 }

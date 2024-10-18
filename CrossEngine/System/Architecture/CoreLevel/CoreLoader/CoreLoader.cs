@@ -16,6 +16,8 @@ namespace CrossEngine.System.Kernel
             SendOnCreateToAllCoreComponents(coreComponents);
             yield return null;
 
+            Console.WriteLine();
+
             SendInitializeToAllCoreComponents(coreComponents);
             yield return null;
         }

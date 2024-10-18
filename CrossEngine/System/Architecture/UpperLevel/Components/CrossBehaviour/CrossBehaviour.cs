@@ -1,46 +1,29 @@
-﻿using CrossEngine.System.Kernel;
+﻿using CrossEngine.System;
+using CrossEngine.System.Kernel;
 using System.Collections;
 
 namespace CrossEngine
 {
-    public abstract class CrossBehaviour : ICrossBehaviour, ICoroutineble
+    public abstract class CrossBehaviour : Component, ICoroutineble
     {
-        private Dictionary<Type, ICrossBehaviour> components;
-
-        public bool enabled => _enabled;
-
-        public bool isInitialized => throw new NotImplementedException();
-
-        private bool _enabled;
-
         private List<IEnumerator> _routines;
 
-        public event Action? OnInitialized;
+
 
         public CrossBehaviour()
         {
-            components = [];
             _routines = [];
-            _enabled = true;
         }
 
-        public void OnCreate()
-        {
-            throw new NotImplementedException();
-        }
 
-        public void Initialize()
-        {
-            throw new NotImplementedException();
-        }
 
         public virtual void Awake() { }
-        public void OnEnable() { }
+        public virtual void OnEnable() { }
         public virtual void Start() { }
+
 
         public virtual void Update()
         {
-
             foreach (var routine in _routines)
             {
                 if (routine.Current is ICoroutineDelay delay && !delay.Ready) continue;
@@ -50,9 +33,10 @@ namespace CrossEngine
         }
         public virtual void FixedUpdate() { }
 
-        public void OnApplicationQuit() { }
-        public void OnDisable() { }
-        public void OnDestroy() { }
+
+        public virtual void OnApplicationQuit() { }
+        public virtual void OnDisable() { }
+        public virtual void OnDestroy() { }
 
 
         public Coroutine StartCoroutine(IEnumerator routine)
@@ -62,35 +46,23 @@ namespace CrossEngine
             Core.CoreRequiest(Start);
             return Coroutine.CreateCoroutine(routine);
         }
-
         public void StopCoroutine(Coroutine coroutine)
         {
             _routines.Remove(coroutine._routine);
         }
 
 
-        public void AddComponent<TCrossBehaviour>() where TCrossBehaviour : ICrossBehaviour, new()
+        public void AddComponent<TComponent>() where TComponent : Component, new()
         {
-            components[typeof(TCrossBehaviour)] = new TCrossBehaviour();
+            GameObject.AddComponent<TComponent>();
         }
-        public TCrossBehaviour GetComponent<TCrossBehaviour>() where TCrossBehaviour : ICrossBehaviour, new()
+        public TComponent GetComponent<TComponent>() where TComponent : Component, new()
         {
-            return (TCrossBehaviour)components[typeof(TCrossBehaviour)];
+            return GameObject.GetComponent<TComponent>();
         }
-        public bool TryGetComponent<TCrossBehaviour>(out TCrossBehaviour crossBehaviour) where TCrossBehaviour : ICrossBehaviour, new()
+        public bool TryGetComponent<TComponent>(out TComponent? crossBehaviour) where TComponent : Component, new()
         {
-            if (components.ContainsKey(typeof(TCrossBehaviour)))
-            {
-                crossBehaviour = (TCrossBehaviour)components[typeof(TCrossBehaviour)];
-
-                return true;
-            }
-            else
-            {
-                crossBehaviour = default;
-
-                return false;
-            }
+            return GameObject.TryGetComponent<TComponent>(out crossBehaviour);
         }       
     }
 }

@@ -16,7 +16,7 @@ namespace CrossEngine.System.Kernel
         private bool _isRunPlayMode;
         private bool _isInitialized;
 
-        private Thread update;
+        private readonly Thread update;
 
         public Core()
         {
@@ -76,26 +76,32 @@ namespace CrossEngine.System.Kernel
 
         private IEnumerator UpdateRoutine()
         {
-            List<CrossBehaviour> rootGameObjects = SceneManager.GetActiveScene().GetRootGameObjects();
+            List<GameObject> rootGameObjects = SceneManager.GetActiveScene().GetRootGameObjects();
 
             while (true)
             {
                 foreach (var gameObject in rootGameObjects)
                 {
-                    gameObject.Update();
+                    foreach (CrossBehaviour component in gameObject.GetComponents<CrossBehaviour>())
+                    {
+                        component.Update();
+                    }
                 }
                 yield return null;
             }
         }
         private IEnumerator FixedUpdateRoutine()
         {
-            List<CrossBehaviour> rootGAmeObjects = SceneManager.GetActiveScene().GetRootGameObjects();
+            List<GameObject> rootGmeObjects = SceneManager.GetActiveScene().GetRootGameObjects();
 
             while (true)
             {
-                foreach (var gameObject in rootGAmeObjects)
+                foreach (var gameObject in rootGmeObjects)
                 {
-                    gameObject.FixedUpdate();
+                    foreach(CrossBehaviour component in gameObject.GetComponents<CrossBehaviour>())
+                    {
+                        component.FixedUpdate();
+                    }
                 }
                 yield return new WaitForSeconds(0.02d);
             }

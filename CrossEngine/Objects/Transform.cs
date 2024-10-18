@@ -2,12 +2,12 @@
 
 namespace CrossEngine
 {
-    public struct Transform
+    public class Transform
     {
-        public Vector3 Position;
+        public Vector3 Position { get; set; }
         public Vector3 Rotation
         {
-            readonly get => _rotation;
+            get => _rotation;
             set
             {
                 _rotation = new Vector3(value.X % MathF.Tau,
@@ -21,8 +21,8 @@ namespace CrossEngine
                 RotationMatrix = x * y * z;
             }
         }
-        public Matrix4x4 RotationMatrix { readonly get; private set; }
-        public Vector3 Scale;
+        public Matrix4x4 RotationMatrix { get; private set; }
+        public Vector3 Scale { get; set; }
 
         private Vector3 _rotation;
 

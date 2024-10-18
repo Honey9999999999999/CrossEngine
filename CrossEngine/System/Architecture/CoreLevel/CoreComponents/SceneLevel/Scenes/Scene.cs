@@ -7,7 +7,7 @@ namespace CrossEngine.System
         public string name;
         public int index;
 
-        public List<CrossBehaviour> rootObjects;
+        public List<GameObject> rootObjects;
 
         public int rootCount => rootObjects.Count;        
 
@@ -17,14 +17,14 @@ namespace CrossEngine.System
             rootObjects = [];
         }
 
-        public List<CrossBehaviour> GetRootGameObjects()
+        public List<GameObject> GetRootGameObjects()
         {
             return rootObjects;
         }
 
         internal void SetIndex(int index) => this.index = index;
 
-        public void AddRootObject(CrossBehaviour rootObject)
+        public void AddRootObject(GameObject rootObject)
         {
             void Add() => rootObjects.Add(rootObject);
 
