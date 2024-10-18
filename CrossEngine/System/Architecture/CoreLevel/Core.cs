@@ -25,8 +25,8 @@ namespace CrossEngine.System.Kernel
 
         public static void RunPlayMode()
         {
-            instance.RunThreadUpdate();
             instance._isRunPlayMode = true;
+            instance.RunThreadUpdate();            
         }
 
         private void RunThreadUpdate()

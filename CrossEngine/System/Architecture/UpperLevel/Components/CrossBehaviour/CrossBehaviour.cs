@@ -6,7 +6,23 @@ namespace CrossEngine
 {
     public abstract class CrossBehaviour : Component, ICoroutineble
     {
+        public override bool Enabled { get => base.Enabled; set 
+            { 
+                base.Enabled = value;
+                if (value)
+                {
+                    if (!isBeAwake) Awake();
+                    if (!isBeOnEnable) OnEnable();
+                    if (!isBeStart) Start();
+                }
+            }  
+        }
+
         private List<IEnumerator> _routines;
+
+        private bool isBeAwake;
+        private bool isBeOnEnable;
+        private bool isBeStart;
 
 
 
@@ -17,9 +33,9 @@ namespace CrossEngine
 
 
 
-        public virtual void Awake() { }
-        public virtual void OnEnable() { }
-        public virtual void Start() { }
+        public virtual void Awake() => isBeAwake = true;
+        public virtual void OnEnable() => isBeOnEnable = true;
+        public virtual void Start() => isBeStart = true;
 
 
         public virtual void Update()

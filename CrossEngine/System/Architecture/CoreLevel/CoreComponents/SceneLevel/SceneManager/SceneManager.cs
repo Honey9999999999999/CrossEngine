@@ -122,13 +122,16 @@ namespace CrossEngine.System
 
         private IEnumerator StartSceneRoutine(Scene scene)
         {
-            List<GameObject> rootGameObjects = scene.GetRootGameObjects();
+            GameObject[] rootGameObjects = scene.GetRootGameObjects().ToArray();
 
             foreach (var gameObject in rootGameObjects)
             {
                 foreach (var commponent in gameObject.GetComponents<CrossBehaviour>())
                 {
-                    commponent.Awake();
+                    if (commponent.Enabled)
+                    {
+                        commponent.Awake();
+                    }
                 }                
             }
             yield return null;
@@ -137,7 +140,10 @@ namespace CrossEngine.System
             {
                 foreach (var commponent in gameObject.GetComponents<CrossBehaviour>())
                 {
-                    commponent.OnEnable();
+                    if (commponent.Enabled)
+                    {
+                        commponent.OnEnable();
+                    }
                 }
             }
             yield return null;
@@ -146,7 +152,10 @@ namespace CrossEngine.System
             {
                 foreach (var commponent in gameObject.GetComponents<CrossBehaviour>())
                 {
-                    commponent.Start();
+                    if (commponent.Enabled)
+                    {
+                        commponent.Start();
+                    }
                 }
             }
         }

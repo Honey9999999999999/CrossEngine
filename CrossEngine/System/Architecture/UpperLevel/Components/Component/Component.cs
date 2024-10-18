@@ -2,7 +2,7 @@
 {
     public abstract class Component
     {
-        public bool Enabled { get; }
+        public virtual bool Enabled { get; set; }
 
         public GameObject GameObject { get; }
         public Transform Transform { get; }
