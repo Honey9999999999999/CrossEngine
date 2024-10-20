@@ -8,7 +8,7 @@ namespace CrossEngine
     {
         internal event Action? OnEnable;
         internal static GameObject? gameObject;
-
+        
         public bool Enabled
         {
             get
@@ -34,18 +34,26 @@ namespace CrossEngine
         private bool _enabled = true;
 
         public GameObject() : this("GameObject") { }
-        public GameObject(string name)
-        {
-            Name = name;
-            AddComponent<Transform>();
-            SceneManager.GetActiveScene().AddRootObject(Transform);
-        }
-
+        public GameObject(string name) : this(name, null) { }
         public GameObject(Transform parent) : this("GameObject", parent) { }
         public GameObject(string name, Transform parent)
         {
             Name = name;
             AddComponent<Transform>();
+
+            if(parent != null)
+            {
+                EstablishingFamilyTies(parent);
+                return;
+            }
+            if (SceneManager.TryGetActiveScene(out Scene scene))
+            {
+                EstablishingFamilyTies(scene.RootNode.Transform);
+            }            
+        }
+
+        private void EstablishingFamilyTies(Transform parent)
+        {
             Transform.Parent = parent;
             parent.AddChild(Transform);
         }
@@ -86,6 +94,61 @@ namespace CrossEngine
             }
 
             return [.. componentsList];
+        }
+
+
+        public static GameObject GetGameObjectWithName(string name)
+        {
+            return TryGetGameObjectWithName(name, out GameObject gameObject, SceneManager.GetActiveScene().RootNode.Transform.GetChilds())
+                ? gameObject
+                : throw new CrossException($"GameObject with name '{name} is not find.'");
+        }
+        public static bool TryGetGameObjectWithName(string name, out GameObject gameObject)
+        {
+            return TryGetGameObjectWithName(name, out gameObject, SceneManager.GetActiveScene().RootNode.Transform.GetChilds());
+        }
+
+        private static bool TryGetGameObjectWithName(string name, out GameObject gameObject, Transform[] parent)
+        {
+            foreach (Transform child in parent)
+            {
+                if (child.GameObject.Name == name)
+                {
+                    gameObject = child.GameObject;
+                    return true;
+                }
+
+                return TryGetGameObjectWithName(name, out gameObject, child.GetChilds());
+            }
+
+            gameObject = null;
+            return false;
+        }
+
+
+        public static GameObject[] GetGameObjectsWithName(string name)
+        {
+            return GetGameObjectsWithName(name, SceneManager.GetActiveScene().RootNode.Transform.GetChilds());
+        }
+        private static GameObject[] GetGameObjectsWithName(string name, Transform[] parent)
+        {
+            GameObject[] gameObjects = [];
+
+            foreach (Transform child in parent)
+            {
+                if (child.GameObject.Name == name)
+                {
+                    gameObjects = [.. gameObjects, child.GameObject];
+                }
+
+                GameObject[] childGameObjects = GetGameObjectsWithName(name, child.GetChilds());
+                foreach (GameObject gameObject in childGameObjects)
+                {
+                    gameObjects = [.. childGameObjects, gameObject];
+                }
+            }
+
+            return gameObjects;
         }
     }
 }

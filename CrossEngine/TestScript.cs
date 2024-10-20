@@ -18,6 +18,12 @@ namespace CrossEngine
             camera = new("Camera");
             camera.AddComponent<Camera>();
 
+            GameObject sphere1 = new("Sphere 1");
+            GameObject sphere2 = new("Sphere 2");
+
+            sphere1.AddComponent<Sphere>();
+            sphere2.AddComponent<Sphere>();
+
             //StartCoroutine(Hi());
             StartCoroutine(Render());
             //StartCoroutine(Stop());
@@ -50,28 +56,23 @@ namespace CrossEngine
             Camera cameraCom = camera.GetComponent<Camera>();
             ConsoleRenderer renderer = new(screen, ref cameraCom);
 
-            List<GameObject> gameObjectList = [new("Sphere 1"), new("Sphere 2"), new("Sphere 3")];
-            List<Sphere> sphereList = [];
+            Sphere[] sphereList = UpdateSphereList();
 
-            foreach(GameObject gameObject in gameObjectList)
-            {
-                gameObject.AddComponent<Sphere>();
-                sphereList.Add(gameObject.GetComponent<Sphere>());
-            }
-
-            Vector3 pos = gameObjectList[0].Transform.Position;
+            Vector3 pos = sphereList[0].Transform.Position;
             // sphere.Transform.Position = -Vector3.UnitZ * 5;
 
-            gameObjectList[0].Transform.Position = new Vector3(3, 0, 0);
-            gameObjectList[1].Transform.Position = new Vector3(0, -15, 0);
+            sphereList[0].Transform.Position = new Vector3(3, 0, 0);
+            sphereList[1].Transform.Position = new Vector3(0, -15, 0);
 
             DateTime start = DateTime.UtcNow;
             int frames = 0;
             while (true)
             {
+                sphereList = UpdateSphereList();
+
                 Console.Title = $"FPS: {-1d / (start - (start = DateTime.UtcNow)).TotalSeconds:0.00}";
-                gameObjectList[0].Transform.Scale = Vector3.One * (MathF.Cos(frames++ * 0.01f) * 0.5f + 1);
-                gameObjectList[0].Transform.Position = pos + new Vector3(1, 0, 0) * (MathF.Sin(frames++ * 0.01f));
+                sphereList[0].Transform.Scale = Vector3.One * (MathF.Cos(frames++ * 0.01f) * 0.5f + 1);
+                sphereList[0].Transform.Position = pos + new Vector3(1, 0, 0) * (MathF.Sin(frames++ * 0.01f));
 
                 ConsoleOutput.Write(renderer.Render([.. sphereList]));
 
@@ -82,6 +83,10 @@ namespace CrossEngine
                 //yield return new WaitForSeconds(0.01);
                 yield return null;
             }
+
+
         }
+
+        private Sphere[] UpdateSphereList() => SceneManager.GetActiveScene().GetAllComponents<Sphere>(SceneManager.GetActiveScene().RootNode.Transform.GetChilds());
     }    
 }

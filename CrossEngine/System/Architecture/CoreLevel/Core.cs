@@ -79,7 +79,7 @@ namespace CrossEngine.System.Kernel
         {
             while (true)
             {
-                Transform[] rootObjects = SceneManager.GetActiveScene().GetRootObjects();
+                Transform[] rootObjects = SceneManager.GetActiveScene().RootNode.Transform.GetChilds();
 
                 foreach (var transform in rootObjects)
                 {
@@ -95,7 +95,7 @@ namespace CrossEngine.System.Kernel
         {
             while (true)
             {
-                Transform[] rootObjects = SceneManager.GetActiveScene().GetRootObjects();
+                Transform[] rootObjects = SceneManager.GetActiveScene().RootNode.Transform.GetChilds();
 
                 foreach (var transform in rootObjects)
                 {

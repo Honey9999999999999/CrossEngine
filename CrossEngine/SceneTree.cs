@@ -1,5 +1,4 @@
 ﻿using CrossEngine.System;
-using System.Xml.Linq;
 
 namespace CrossEngine
 {
@@ -13,7 +12,7 @@ namespace CrossEngine
 
             Console.WriteLine($"\nScene : {SceneManager.GetActiveScene().Name}");
 
-            WriteChilds(SceneManager.GetActiveScene().GetRootObjects(), "RootObject");
+            WriteChilds(SceneManager.GetActiveScene().RootNode.Transform.GetChilds(), "RootObject");
 
             level = 0;
         }

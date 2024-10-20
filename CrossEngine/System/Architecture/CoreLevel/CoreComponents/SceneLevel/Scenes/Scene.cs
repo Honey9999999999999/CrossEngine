@@ -1,34 +1,37 @@
-﻿using CrossEngine.System.Kernel;
-using System.Xml.Serialization;
-
-namespace CrossEngine.System
+﻿namespace CrossEngine.System
 {
     public sealed class Scene
     {
         public string Name { get; set; }
         public int Index { get; set; }
-        public int rootCount => _rootObjects.Length;
-
-        private Transform[] _rootObjects;
+        public GameObject RootNode { get; init; }
 
         internal Scene()
         {
             Name = "Default Scene";
-            _rootObjects = [];
+            RootNode = new("RootNode", null);
         }
 
-        public Transform[] GetRootObjects()
+        public TComponent[] GetAllComponents<TComponent>(Transform[] parent) where TComponent : Component, new()
         {
-            return _rootObjects;
-        }
+            TComponent[] components = [];
 
-        internal void SetIndex(int index) => Index = index;
+            foreach (var transform in parent)
+            {
+                if(transform.TryGetComponent(out TComponent component))
+                {
+                    components = [.. components, component];
+                }
 
-        public void AddRootObject(Transform rootObject)
-        {
-            void Add() => _rootObjects = [.. _rootObjects, rootObject];
+                TComponent[] childComponents = GetAllComponents<TComponent>(transform.GetChilds());
 
-            Core.CoreRequiest(Add);
+                foreach (var component1 in childComponents)
+                {
+                    components = [..components, component1];
+                }
+            }
+
+            return components;
         }
     }
 }

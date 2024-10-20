@@ -59,13 +59,15 @@ namespace CrossEngine.System
             {
                 Name = name,
                 Index = instance._scenesMap.Count
-            };
+            };            
 
             FileManager.SaveInXml(scene, name, SavePlace.Scenes);
 
-            instance._scenesMap.Add(name);
+            instance._scenesMap.Add(scene.Name);
 
             FileManager.SaveInXml(instance._scenesMap, DICTIONARY_MAP_NAME, SavePlace.Scenes);
+
+            instance._activeScene = scene;
         }
 
 
@@ -78,6 +80,12 @@ namespace CrossEngine.System
             }
 
             return instance._activeScene;
+        }
+        internal static bool TryGetActiveScene(out Scene scene)
+        {
+            bool isContains = instance._activeScene != null;
+            scene = isContains ? instance._activeScene : null;
+            return isContains;
         }
 
         public static Scene GetSceneAt(int index)
@@ -119,7 +127,7 @@ namespace CrossEngine.System
 
         private IEnumerator StartSceneRoutine(Scene scene)
         {
-            Transform[] rootGameObjects = [.. scene.GetRootObjects()];
+            Transform[] rootGameObjects = [.. scene.RootNode.Transform.GetChilds()];
 
             foreach (var transform in rootGameObjects)
             {
@@ -159,7 +167,7 @@ namespace CrossEngine.System
 
         private static void StopActiveScene()
         {
-            IEnumerator uploadSceneRoutine = StopSceneRoutine(instance._activeScene.GetRootObjects());
+            IEnumerator uploadSceneRoutine = StopSceneRoutine(instance._activeScene.RootNode.Transform.GetChilds());
             while (uploadSceneRoutine.MoveNext()) ;
 
             OnSceneStoped?.Invoke();

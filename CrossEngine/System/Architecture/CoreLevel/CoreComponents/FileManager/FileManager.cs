@@ -50,12 +50,7 @@ namespace CrossEngine.System
 
         public static bool IsPathExist(SavePlace location, string name)
         {
-            if (File.Exists($"{instance._pathMap[location]}\\{name}.xml"))
-            {
-                return true;
-            }
-
-            return false;
+            return File.Exists($"{instance._pathMap[location]}\\{name}.xml");
         }
     }
 }
