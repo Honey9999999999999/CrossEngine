@@ -118,7 +118,10 @@ namespace CrossEngine
                     return true;
                 }
 
-                return TryGetGameObjectWithName(name, out gameObject, child.GetChilds());
+                if(TryGetGameObjectWithName(name, out gameObject, child.GetChilds()))
+                {
+                    return true;
+                }
             }
 
             gameObject = null;
