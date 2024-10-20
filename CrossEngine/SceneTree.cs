@@ -10,6 +10,8 @@ namespace CrossEngine
         {
             base.Update();
 
+            Console.SetCursorPosition(0, 0);
+
             Console.WriteLine($"\nScene : {SceneManager.GetActiveScene().Name}");
 
             WriteChilds(SceneManager.GetActiveScene().RootNode.Transform.GetChilds(), "RootObject");

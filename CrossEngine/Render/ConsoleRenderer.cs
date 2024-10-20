@@ -1,26 +1,12 @@
-﻿using System.Numerics;
+using CrossEngine.Objects;
+
+using System;
+using System.Numerics;
 
 using static CrossEngine.Render.ConsoleOutput;
 
 namespace CrossEngine.Render
 {
-    public struct Color(byte r, byte g, byte b)
-    {
-        public float R { readonly get => BtF(r); set => r = FtB(value); }
-        public float G { readonly get => BtF(g); set => g = FtB(value); }
-        public float B { readonly get => BtF(b); set => b = FtB(value); }
-
-        private const float btf = 1.0f / byte.MaxValue;
-        private const float ftb = byte.MaxValue;
-
-        private static float BtF(byte value) => value * btf;
-        private static byte FtB(float value) => value switch
-        {
-            >= 1 => byte.MaxValue,
-            <= 0 => byte.MinValue,
-            _ => (byte)MathF.Round(value * ftb)
-        };
-    }
 
     public class Buffer
     {
@@ -58,20 +44,31 @@ namespace CrossEngine.Render
             CharInfo sky = new()
             {
                 Char = new('@'),
-                //Attributes = (short)ConsoleColor.DarkBlue// << 4
+                Attributes = (short)ConsoleColor.DarkBlue// << 4
             };
             Array.Fill(char_buffer, sky);
             Array.Fill(depth_buffer, float.PositiveInfinity);
 
             // The FUN part
-            // Parallel.ForEach(gameObjects, obj => 
-            foreach (IRayCastable obj in gameObjects)
+            Parallel.ForEach(gameObjects, obj =>
+            //foreach (IRayCastable obj in gameObjects)
             {
-                Matrix4x4 projection = Matrix4x4.CreatePerspectiveFieldOfView(MathF.PI / 3f, screen.AspectRatio, 0.001f, 1000f),
-                          rotation = camera.Transform.RotationMatrix,
-                          translation = Matrix4x4.CreateTranslation(obj.Bounds.Center - camera.Transform.Position);
-
+                //Matrix4x4 projection = Matrix4x4.CreatePerspectiveFieldOfView(MathF.PI / 3f, screen.AspectRatio, 0.001f, 1000f),
+                //          rotation = camera.Transform.RotationMatrix,
+                //          translation = Matrix4x4.CreateTranslation(obj.Bounds.Center - camera.Transform.Position);
                 Ray ray = new(camera.Transform.Position, camera.Transform.Forward);
+
+                var d = Vector3.Dot(camera.Transform.Position + camera.Transform.Position * 0.01f, ray.Direction);
+                var t = d + Vector3.Dot(ray.Origin, -ray.Direction);
+                Vector3 point = ray.Origin + t * ray.Direction;
+
+                Vector3 D = Vector3.Normalize(point - camera.Transform.Position) + Vector3.One;
+                //int indx = D.X * screen.Width + D.Y * screen.Height;
+
+                //char_buffer[indx].Char.UnicodeChar = ' ';
+                //char_buffer[indx].Attributes = (int)ConsoleColor.Black << 4 | (int)ConsoleColor.White;
+                //Console.WriteLine(point - camera.Transform.Position);
+
                 for (int i = 0; i < screen.Width; i++)
                 {
                     for (int j = 0; j < screen.Height; j++)
@@ -82,7 +79,7 @@ namespace CrossEngine.Render
 
                         int index = j * screen.Width + i;
                         float u = i * 2.0f / screen.Width - 1,
-                              v = j * 2.0f / screen.Height - 1;
+                                v = j * 2.0f / screen.Height - 1;
                         Vector2 uv = new(u * screen.AspectRatio / screen.SymbolAspectRatio, v);
 
                         ray.Direction = Vector3.Transform(new Vector3(uv, camera.RayLength), camera.Transform.RotationMatrix);
@@ -93,10 +90,12 @@ namespace CrossEngine.Render
                         {
                             // symbol = 'X';
                             //SetPixel(i, j, ConsoleColor.White);
-                            Console.SetCursorPosition(i, j);
-                            Console.Write('X');
-                            Console.SetCursorPosition(0, screen.Height - 2);
-                            Console.Write(hit.Distance);
+                            //Console.SetCursorPosition(i, j);
+                            //Console.Write('X');
+                            //Console.SetCursorPosition(0, screen.Height - 2);
+                            //Console.Write(hit.Distance);
+                            char_buffer[index].Char.UnicodeChar = 'X';
+                            char_buffer[index].Attributes = (int)ConsoleColor.Black << 4 | (int)ConsoleColor.White;
                             continue;
                         }
 
@@ -114,7 +113,7 @@ namespace CrossEngine.Render
                         //});
                     }
                 }
-            }
+            });
             return char_buffer;
         }
 
