@@ -27,6 +27,8 @@ namespace CrossEngine
             //StartCoroutine(Hi());
             StartCoroutine(Render());
             //StartCoroutine(Stop());
+
+
         }
 
         public override void Update()
@@ -58,11 +60,11 @@ namespace CrossEngine
 
             Sphere[] sphereList = UpdateSphereList();
 
-            Vector3 pos = sphereList[0].Transform.Position;
+            Vector3 pos = GameObject.GetGameObjectWithName("Debuger").Transform.Position;
             // sphere.Transform.Position = -Vector3.UnitZ * 5;
 
-            sphereList[0].Transform.Position = new Vector3(3, 0, 0);
-            sphereList[1].Transform.Position = new Vector3(0, -15, 0);
+            //sphereList[0].Transform.Position = new Vector3(3, 0, 0);
+            //sphereList[1].Transform.Position = new Vector3(0, -15, 0);
 
             DateTime start = DateTime.UtcNow;
             int frames = 0;
@@ -70,9 +72,16 @@ namespace CrossEngine
             {
                 sphereList = UpdateSphereList();
 
+
+                for (int i = 0; i < sphereList.Length; i++)
+                {
+                    Console.SetCursorPosition(50, i);
+                    Console.Write($"{sphereList[i].GameObject.Name} : {sphereList[i].GameObject.Transform.Position}");
+                }
                 Console.Title = $"FPS: {-1d / (start - (start = DateTime.UtcNow)).TotalSeconds:0.00}";
-                sphereList[0].Transform.Scale = Vector3.One * (MathF.Cos(frames++ * 0.01f) * 0.5f + 1);
-                sphereList[0].Transform.Position = pos + new Vector3(1, 0, 0) * (MathF.Sin(frames++ * 0.01f));
+                //sphereList[0].Transform.Scale = Vector3.One * (MathF.Cos(frames++ * 0.01f) * 0.5f + 1);
+                GameObject.GetGameObjectWithName("Debuger").Transform.Position = pos + Vector3.One * MathF.Sin(frames++ * 0.01f);
+                //GameObject.GetGameObjectWithName("Debuger@").Transform.Scale = Vector3.One * MathF.Sin(frames++ * 0.01f);
 
                 ConsoleOutput.Write(renderer.Render([.. sphereList]));
 
@@ -88,5 +97,5 @@ namespace CrossEngine
         }
 
         private Sphere[] UpdateSphereList() => SceneManager.GetActiveScene().GetAllComponents<Sphere>(SceneManager.GetActiveScene().RootNode.Transform.GetChilds());
-    }    
+    }
 }

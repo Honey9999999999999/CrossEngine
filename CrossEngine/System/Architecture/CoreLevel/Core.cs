@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using CrossEngine;
 
 namespace CrossEngine.System.Kernel
 {
@@ -22,17 +21,17 @@ namespace CrossEngine.System.Kernel
         public Core()
         {
             update = new(Update);
-        }        
+        }
 
         public static void RunPlayMode()
         {
             _isRunPlayMode = true;
-            instance.RunThreadUpdate();            
+            instance.RunThreadUpdate();
         }
 
         private void RunThreadUpdate()
         {
-            update.Start();            
+            update.Start();
         }
 
         public static void CoreRequiest(Action action)
@@ -99,7 +98,7 @@ namespace CrossEngine.System.Kernel
 
                 foreach (var transform in rootObjects)
                 {
-                    foreach(CrossBehaviour component in transform.GetComponents<CrossBehaviour>())
+                    foreach (CrossBehaviour component in transform.GetComponents<CrossBehaviour>())
                     {
                         component.FixedUpdate();
                     }

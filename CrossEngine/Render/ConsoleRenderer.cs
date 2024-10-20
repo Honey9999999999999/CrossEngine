@@ -1,5 +1,4 @@
 ﻿using System.Numerics;
-using System.Runtime.InteropServices;
 
 using static CrossEngine.Render.ConsoleOutput;
 
@@ -56,7 +55,8 @@ namespace CrossEngine.Render
 
         public CharInfo[] Render(List<IRayCastable> gameObjects)//, List<ILightSource> light)
         {
-            CharInfo sky = new() {
+            CharInfo sky = new()
+            {
                 Char = new('@'),
                 //Attributes = (short)ConsoleColor.DarkBlue// << 4
             };

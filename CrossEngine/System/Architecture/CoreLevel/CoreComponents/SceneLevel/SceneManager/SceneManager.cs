@@ -59,7 +59,7 @@ namespace CrossEngine.System
             {
                 Name = name,
                 Index = instance._scenesMap.Count
-            };            
+            };
 
             FileManager.SaveInXml(scene, name, SavePlace.Scenes);
 
@@ -96,7 +96,7 @@ namespace CrossEngine.System
         {
             return instance.GetScene(name);
         }
-        
+
 
 
         public static void LoadScene(int index)
@@ -137,7 +137,7 @@ namespace CrossEngine.System
                     {
                         commponent.Awake();
                     }
-                }                
+                }
             }
             yield return null;
 

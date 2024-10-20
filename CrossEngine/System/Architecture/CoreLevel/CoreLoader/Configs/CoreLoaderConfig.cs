@@ -2,7 +2,9 @@
 {
     internal abstract class CoreLoaderConfig
     {
-        public List<IInitializeble> coreComponents { get
+        public List<IInitializeble> coreComponents
+        {
+            get
             {
                 if (_coreComponents == null)
                 {
@@ -21,7 +23,7 @@
 
         protected void CreateComponent<TCrossBehaviour>() where TCrossBehaviour : IInitializeble, new()
         {
-            if(_coreComponents == null)
+            if (_coreComponents == null)
             {
                 throw new CrossException("Dictionary of components is null!!!");
             }

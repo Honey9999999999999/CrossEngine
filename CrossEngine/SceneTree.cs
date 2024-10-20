@@ -26,7 +26,7 @@ namespace CrossEngine
 
             for (int i = 0; i < childs.Length; i++)
             {
-                
+
                 int upperLevel = level * 2 - 1;
                 Console.CursorLeft = upperLevel;
 
@@ -42,7 +42,7 @@ namespace CrossEngine
                 }
 
                 cursorTopLast = Console.CursorTop + 1;
-                
+
                 Console.WriteLine($"{(i == childs.Length - 1 ? "└" : "├")}{name} : {childs[i].GameObject.Name}");
 
                 level++;
@@ -58,7 +58,7 @@ namespace CrossEngine
 
                 Transform[] newChilds = childs[i].GetChilds();
 
-                if(newChilds.Length > 0)
+                if (newChilds.Length > 0)
                 {
                     int interCursorTop = Console.CursorTop - 1;
                     int interCursorLeft = level * 2 + 1;

@@ -8,7 +8,7 @@ namespace CrossEngine
     {
         internal event Action? OnEnable;
         internal static GameObject? gameObject;
-        
+
         public bool Enabled
         {
             get
@@ -41,7 +41,7 @@ namespace CrossEngine
             Name = name;
             AddComponent<Transform>();
 
-            if(parent != null)
+            if (parent != null)
             {
                 EstablishingFamilyTies(parent);
                 return;
@@ -49,7 +49,7 @@ namespace CrossEngine
             if (SceneManager.TryGetActiveScene(out Scene scene))
             {
                 EstablishingFamilyTies(scene.RootNode.Transform);
-            }            
+            }
         }
 
         private void EstablishingFamilyTies(Transform parent)
@@ -118,7 +118,7 @@ namespace CrossEngine
                     return true;
                 }
 
-                if(TryGetGameObjectWithName(name, out gameObject, child.GetChilds()))
+                if (TryGetGameObjectWithName(name, out gameObject, child.GetChilds()))
                 {
                     return true;
                 }

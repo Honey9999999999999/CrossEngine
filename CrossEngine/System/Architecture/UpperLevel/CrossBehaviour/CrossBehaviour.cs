@@ -42,13 +42,13 @@ namespace CrossEngine
             }
         }
 
-        public virtual void Awake() 
+        public virtual void Awake()
         {
             foreach (Transform transform in Transform.GetChilds())
             {
                 foreach (CrossBehaviour crossBehaviour in transform.GetComponents<CrossBehaviour>())
                 {
-                    if(crossBehaviour.Enabled)
+                    if (crossBehaviour.Enabled)
                         crossBehaviour.Awake();
                 }
             }
@@ -151,6 +151,6 @@ namespace CrossEngine
             Core.CoreRequiest(StartRoutine);
             return Coroutine.CreateCoroutine(routine);
         }
-        public void StopCoroutine(Coroutine coroutine) => _routines.Remove(coroutine._routine);        
+        public void StopCoroutine(Coroutine coroutine) => _routines.Remove(coroutine._routine);
     }
 }

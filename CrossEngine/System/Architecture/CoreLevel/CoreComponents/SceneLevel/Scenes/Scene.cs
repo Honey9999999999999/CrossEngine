@@ -18,7 +18,7 @@
 
             foreach (var transform in parent)
             {
-                if(transform.TryGetComponent(out TComponent component))
+                if (transform.TryGetComponent(out TComponent component))
                 {
                     components = [.. components, component];
                 }
@@ -27,7 +27,7 @@
 
                 foreach (var component1 in childComponents)
                 {
-                    components = [..components, component1];
+                    components = [.. components, component1];
                 }
             }
 

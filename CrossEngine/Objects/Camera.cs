@@ -4,6 +4,6 @@ namespace CrossEngine
 {
     public class Camera : Component
     {
-        public float RayLength = 1;        
+        public float RayLength = 1;
     }
 }

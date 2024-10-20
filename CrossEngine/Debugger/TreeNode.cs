@@ -116,29 +116,29 @@ namespace CrossEngine
             private enum FriendlyAttributes
             {
                 Constructor = 0b10001110111,
-                Property    = 0b00000000000,
-                Method      = 0b10001110111,
-                Field       = 0b00011110111,
-                Event       = 0b00000000000,
-                Type        = 0b00110100111
+                Property = 0b00000000000,
+                Method = 0b10001110111,
+                Field = 0b00011110111,
+                Event = 0b00000000000,
+                Type = 0b00110100111
             }
 
             private static string AttributesToString(MemberInfo member) => (member switch
             {
                 ConstructorInfo info => $"{info.Attributes & (MethodAttributes)FriendlyAttributes.Constructor:F}",
-                PropertyInfo info    => $"{info.Attributes & (PropertyAttributes)FriendlyAttributes.Property:F}",
-                MethodInfo info      => $"{info.Attributes & (MethodAttributes)FriendlyAttributes.Method:F}",
-                FieldInfo info       => $"{info.Attributes & (FieldAttributes)FriendlyAttributes.Field:F}",
-                EventInfo info       => $"{info.Attributes & (EventAttributes)FriendlyAttributes.Event:F}",
-                TypeInfo info        => $"{info.Attributes & (TypeAttributes)FriendlyAttributes.Type:F}",
+                PropertyInfo info => $"{info.Attributes & (PropertyAttributes)FriendlyAttributes.Property:F}",
+                MethodInfo info => $"{info.Attributes & (MethodAttributes)FriendlyAttributes.Method:F}",
+                FieldInfo info => $"{info.Attributes & (FieldAttributes)FriendlyAttributes.Field:F}",
+                EventInfo info => $"{info.Attributes & (EventAttributes)FriendlyAttributes.Event:F}",
+                TypeInfo info => $"{info.Attributes & (TypeAttributes)FriendlyAttributes.Type:F}",
                 _ => string.Empty
             }).Replace(",", string.Empty).Replace("None", string.Empty);
 
             private static string ParametersToString(MemberInfo member) => string.Join(", ", (member switch
             {
                 ConstructorInfo info => info.GetParameters(),
-                PropertyInfo info    => info.GetIndexParameters(),
-                MethodInfo info      => info.GetParameters(),
+                PropertyInfo info => info.GetIndexParameters(),
+                MethodInfo info => info.GetParameters(),
                 _ => null
             })?.Select(p => $"{p.ParameterType.Name} {p.Name}") ?? []);
 
@@ -160,7 +160,7 @@ namespace CrossEngine
                 PropertyInfo info => $"{info.PropertyType.Name} {info.Name}[{ParametersToString(info)}] {{ ".Replace("[] ", string.Empty) +
                 info switch
                 {
-                    { CanRead: true, CanWrite: true }  => $"{AttributesToString(info.GetMethod)} get; {AttributesToString(info.SetMethod)} set;",   // read and write
+                    { CanRead: true, CanWrite: true } => $"{AttributesToString(info.GetMethod)} get; {AttributesToString(info.SetMethod)} set;",   // read and write
                     { CanRead: true, CanWrite: false } => $"{AttributesToString(info.GetMethod)} get;",       // read only
                     { CanRead: false, CanWrite: true } => $"{AttributesToString(info.SetMethod)} set;",       // write only
                     _ => string.Empty                                    // no read, no write
@@ -170,7 +170,7 @@ namespace CrossEngine
                 TypeInfo info => info switch
                 {
                     { IsValueType: true } => "Struct ",
-                    { IsClass: true }     => "Class ",
+                    { IsClass: true } => "Class ",
                     _ => string.Empty
                 } + info.Name,
 

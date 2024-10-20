@@ -1,6 +1,6 @@
 ﻿using CrossEngine.System.Kernel;
-using SharpHook.Native;
 using SharpHook;
+using SharpHook.Native;
 
 namespace CrossEngine
 {
