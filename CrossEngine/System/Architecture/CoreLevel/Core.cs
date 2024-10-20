@@ -61,11 +61,11 @@ namespace CrossEngine.System.Kernel
             OnUpdateStarted?.Invoke();
 
             while (_isRunPlayMode)
-            {                
+            {
                 OnPreUpdate?.Invoke();
 
-                if (fixedUpdateRoutine.Current is ICoroutineDelay delay && !delay.Ready) continue;
-                fixedUpdateRoutine.MoveNext();
+                if (fixedUpdateRoutine.Current is not ICoroutineDelay delay || delay.Ready)
+                    fixedUpdateRoutine.MoveNext();
 
                 updateRoutine.MoveNext();
 

@@ -39,41 +39,6 @@ namespace CrossEngine
             }
 
             camera.Transform.Rotation += Vector3.UnitZ * Time.DeltaTime;
-
-            Console.WriteLine();
-            foreach (var item in SceneManager.GetActiveScene().GetRootObjects())
-            {
-                Console.WriteLine($"RootObject : {item.GameObject.Name}");
-
-                Component[] components = item.GetComponents();
-                for (int i = 0; i < components.Length; i++)
-                {
-                    Console.CursorLeft = 4;
-                    Console.WriteLine($"{(i == components.Length - 1 ? "└" : "├")}Object component : {components[i].GetType().Name}");
-                }
-            }
-
-            DateTime timeTick = DateTime.UtcNow;
-            DeltaTime = (float)(timeTick - _oldtime).TotalSeconds;
-            _oldtime = timeTick;
-
-            Console.WriteLine(1 / DeltaTime);
-        }
-
-        IEnumerator Hi()
-        {
-            string text = "Here you can find activities to practise your reading skills. Reading will help you to improve your understanding of the language and build your vocabulary.\r\n\r\nThe self-study lessons in this section are written and organised by English level based on the Common European Framework of Reference for languages (CEFR). There are different types of texts and interactive exercises that practise the reading skills you need to do well in your studies, to get ahead at work and to communicate in English in your free time.\r\n\r\nTake our free online English test to find out which level to choose. Select your level, from A1 English level (elementary) to C1 English level (advanced), and improve your reading skills at your own speed, whenever it's convenient for you.";
-
-            foreach (var item in text)
-            {
-                Console.Write(item);
-                yield return new WaitForSeconds(0.02d);
-            }
-        }
-        IEnumerator Stop()
-        {
-            yield return new WaitForSeconds(4d);
-            Engine.StopPlayMode();
         }
 
         IEnumerator Render()

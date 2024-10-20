@@ -8,8 +8,8 @@ namespace CrossEngine.System
 
         public Engine()
         {
-            new CoreManager();
-            new CoreLoader();
+            _ = new CoreManager();
+            _ = new CoreLoader();
         }
 
         public static void StartCore(TypeConfig config)

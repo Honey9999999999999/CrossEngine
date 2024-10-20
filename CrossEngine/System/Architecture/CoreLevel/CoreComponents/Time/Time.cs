@@ -6,7 +6,7 @@ namespace CrossEngine
     {
         public static float DeltaTime { get; private set; }
 
-        private DateTime _oldtime = DateTime.UtcNow;
+        private DateTime last = DateTime.UtcNow;
 
         public override void Initialize()
         {
@@ -17,9 +17,9 @@ namespace CrossEngine
 
         private void CalculateDeltaTime()
         {
-            DateTime timeTick = DateTime.UtcNow;
-            DeltaTime = (float)(timeTick - _oldtime).TotalSeconds;
-            _oldtime = timeTick;
+            DateTime now = DateTime.UtcNow;
+            DeltaTime = (float)(now - last).TotalSeconds;
+            last = now;
         }
     }
 }
