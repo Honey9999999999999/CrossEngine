@@ -1,8 +1,10 @@
-﻿using System.Numerics;
+﻿using CrossEngine.System;
+using CrossEngine.System.Components;
+using System.Numerics;
 
 namespace CrossEngine
 {
-    public class Transform
+    public class Transform : Component
     {
         public Vector3 Position { get; set; }
         public Vector3 Rotation
@@ -25,13 +27,28 @@ namespace CrossEngine
         public Vector3 Scale { get; set; }
 
         private Vector3 _rotation;
+        private Transform[] _childs;
+
+
 
         public Transform() : this(Vector3.Zero, Vector3.Zero, Vector3.One) { }
         public Transform(Vector3 position, Vector3 rotation, Vector3 scale)
         {
-            this.Position = position;
-            this.Rotation = rotation;
-            this.Scale = scale;
+            Position = position;
+            Rotation = rotation;
+            Scale = scale;
+
+            _childs = [];
+        }
+
+
+
+        public Transform[] GetChilds() => _childs;
+        public void AddChild(Transform transform)
+        {
+            _childs = this != transform 
+                ? [.. _childs, transform]
+                : throw new CrossException("GameObject cannot contain itself");
         }
     }
 }

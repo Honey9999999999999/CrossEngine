@@ -6,9 +6,9 @@ using CrossEngine.System.Kernel;
 new Engine();
 Engine.StartCore(TypeConfig.ConsoleCore);
 
-GameObject starter = new();
-SceneManager.GetActiveScene().AddRootObject(starter);
 
-starter.AddComponent<TestScript>();
 
 Engine.RunPlayMode();
+
+GameObject starter = new("Starter");
+starter.AddComponent<TestScript>();

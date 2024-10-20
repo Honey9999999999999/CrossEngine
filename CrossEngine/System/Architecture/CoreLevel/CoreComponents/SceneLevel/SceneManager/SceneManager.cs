@@ -1,8 +1,5 @@
 ﻿using CrossEngine.System.Kernel;
 using System.Collections;
-using System.Formats.Tar;
-using System.Xml.Serialization;
-using static System.Formats.Asn1.AsnWriter;
 
 namespace CrossEngine.System
 {
@@ -60,8 +57,8 @@ namespace CrossEngine.System
         {
             Scene scene = new()
             {
-                name = name,
-                index = instance._scenesMap.Count
+                Name = name,
+                Index = instance._scenesMap.Count
             };
 
             FileManager.SaveInXml(scene, name, SavePlace.Scenes);
@@ -122,11 +119,11 @@ namespace CrossEngine.System
 
         private IEnumerator StartSceneRoutine(Scene scene)
         {
-            GameObject[] rootGameObjects = [.. scene.GetRootGameObjects()];
+            Transform[] rootGameObjects = [.. scene.GetRootObjects()];
 
-            foreach (var gameObject in rootGameObjects)
+            foreach (var transform in rootGameObjects)
             {
-                foreach (var commponent in gameObject.GetComponents<CrossBehaviour>())
+                foreach (var commponent in transform.GetComponents<CrossBehaviour>())
                 {
                     if (commponent.Enabled)
                     {
@@ -136,9 +133,9 @@ namespace CrossEngine.System
             }
             yield return null;
 
-            foreach (var gameObject in rootGameObjects)
+            foreach (var transform in rootGameObjects)
             {
-                foreach (var commponent in gameObject.GetComponents<CrossBehaviour>())
+                foreach (var commponent in transform.GetComponents<CrossBehaviour>())
                 {
                     if (commponent.Enabled)
                     {
@@ -148,9 +145,9 @@ namespace CrossEngine.System
             }
             yield return null;
 
-            foreach (var gameObject in rootGameObjects)
+            foreach (var transform in rootGameObjects)
             {
-                foreach (var commponent in gameObject.GetComponents<CrossBehaviour>())
+                foreach (var commponent in transform.GetComponents<CrossBehaviour>())
                 {
                     if (commponent.Enabled)
                     {
@@ -162,35 +159,35 @@ namespace CrossEngine.System
 
         private static void StopActiveScene()
         {
-            IEnumerator uploadSceneRoutine = StopSceneRoutine(instance._activeScene.GetRootGameObjects());
+            IEnumerator uploadSceneRoutine = StopSceneRoutine(instance._activeScene.GetRootObjects());
             while (uploadSceneRoutine.MoveNext()) ;
 
             OnSceneStoped?.Invoke();
         }
 
-        private static IEnumerator StopSceneRoutine(List<GameObject> rootGameObjects)
+        private static IEnumerator StopSceneRoutine(Transform[] rootGameObjects)
         {
-            foreach (var gameObject in rootGameObjects)
+            foreach (var transform in rootGameObjects)
             {
-                foreach (var commponent in gameObject.GetComponents<CrossBehaviour>())
+                foreach (var commponent in transform.GetComponents<CrossBehaviour>())
                 {
                     commponent.OnApplicationQuit();
                 }
             }
             yield return null;
 
-            foreach (var gameObject in rootGameObjects)
+            foreach (var transform in rootGameObjects)
             {
-                foreach (var commponent in gameObject.GetComponents<CrossBehaviour>())
+                foreach (var commponent in transform.GetComponents<CrossBehaviour>())
                 {
                     commponent.OnDisable();
                 }
             }
             yield return null;
 
-            foreach (var gameObject in rootGameObjects)
+            foreach (var transform in rootGameObjects)
             {
-                foreach (var commponent in gameObject.GetComponents<CrossBehaviour>())
+                foreach (var commponent in transform.GetComponents<CrossBehaviour>())
                 {
                     commponent.OnDestroy();
                 }

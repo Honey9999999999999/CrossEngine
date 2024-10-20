@@ -1,8 +1,8 @@
-﻿namespace CrossEngine.System
+﻿namespace CrossEngine.System.Kernel
 {
     public abstract class CoreComponent<T> : Singleton<T>, IInitializeble where T : Singleton<T>
     {
-        public bool isInitialized => _isInitialized; 
+        public bool isInitialized => _isInitialized;
 
         private bool _isInitialized;
 

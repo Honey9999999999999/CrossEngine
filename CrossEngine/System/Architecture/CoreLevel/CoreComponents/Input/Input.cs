@@ -1,5 +1,4 @@
-﻿using CrossEngine.System;
-using CrossEngine.System.Kernel;
+﻿using CrossEngine.System.Kernel;
 using SharpHook.Native;
 using SharpHook;
 

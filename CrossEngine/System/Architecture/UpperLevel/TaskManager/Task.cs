@@ -1,4 +1,4 @@
-﻿namespace CrossEngine
+﻿namespace CrossEngine.System
 {
     public class Task(Action action) : ITask
     {

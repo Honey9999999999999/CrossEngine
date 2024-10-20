@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-namespace CrossEngine
+namespace CrossEngine.System
 {
     public interface ICoroutineble
     {

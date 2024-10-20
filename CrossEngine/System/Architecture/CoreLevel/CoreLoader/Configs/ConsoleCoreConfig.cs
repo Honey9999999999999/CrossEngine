@@ -6,6 +6,7 @@
         {
             CreateComponent<FileManager>();
             CreateComponent<SceneManager>();
+            CreateComponent<Time>();
             CreateComponent<Input>();
         }
     }

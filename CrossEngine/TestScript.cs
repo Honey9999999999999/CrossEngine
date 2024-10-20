@@ -10,6 +10,8 @@ namespace CrossEngine
     internal class TestScript : CrossBehaviour
     {
         public Camera camera;
+        private float DeltaTime;
+        private DateTime _oldtime;
 
         public override void Start()
         {
@@ -29,12 +31,33 @@ namespace CrossEngine
 
             if (Input.GetKey(KeyCode.VcD))
             {
-                camera.Transform.Rotation += Vector3.UnitZ * 0.01f;
+                camera.Transform.Rotation += Vector3.UnitZ * Time.DeltaTime;
             }
             if (Input.GetKey(KeyCode.VcA))
             {
-                camera.Transform.Rotation -= Vector3.UnitZ * 0.01f;
+                camera.Transform.Rotation -= Vector3.UnitZ * Time.DeltaTime;
             }
+
+            camera.Transform.Rotation += Vector3.UnitZ * Time.DeltaTime;
+
+            Console.WriteLine();
+            foreach (var item in SceneManager.GetActiveScene().GetRootObjects())
+            {
+                Console.WriteLine($"RootObject : {item.GameObject.Name}");
+
+                Component[] components = item.GetComponents();
+                for (int i = 0; i < components.Length; i++)
+                {
+                    Console.CursorLeft = 4;
+                    Console.WriteLine($"{(i == components.Length - 1 ? "└" : "├")}Object component : {components[i].GetType().Name}");
+                }
+            }
+
+            DateTime timeTick = DateTime.UtcNow;
+            DeltaTime = (float)(timeTick - _oldtime).TotalSeconds;
+            _oldtime = timeTick;
+
+            Console.WriteLine(1 / DeltaTime);
         }
 
         IEnumerator Hi()
@@ -76,7 +99,7 @@ namespace CrossEngine
             int frames = 0;
             while (true)
             {
-                Console.Title = $"FPS: {-1d / (start - (start = DateTime.UtcNow)).TotalSeconds:0}";
+                Console.Title = $"FPS: {-1d / (start - (start = DateTime.UtcNow)).TotalSeconds:0.00}";
                 list[0].Transform.Scale = Vector3.One * (MathF.Cos(frames++ * 0.01f) * 0.5f + 1);
                 list[0].Transform.Position = pos + new Vector3(1, 0, 0) * (MathF.Sin(frames++ * 0.01f));
 

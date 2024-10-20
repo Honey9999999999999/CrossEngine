@@ -1,32 +1,32 @@
 ﻿using CrossEngine.System.Kernel;
+using System.Xml.Serialization;
 
 namespace CrossEngine.System
 {
     public sealed class Scene
     {
-        public string name;
-        public int index;
+        public string Name { get; set; }
+        public int Index { get; set; }
+        public int rootCount => _rootObjects.Length;
 
-        public List<GameObject> rootObjects;
-
-        public int rootCount => rootObjects.Count;        
+        private Transform[] _rootObjects;
 
         internal Scene()
         {
-            name = "Default Scene";
-            rootObjects = [];
+            Name = "Default Scene";
+            _rootObjects = [];
         }
 
-        public List<GameObject> GetRootGameObjects()
+        public Transform[] GetRootObjects()
         {
-            return rootObjects;
+            return _rootObjects;
         }
 
-        internal void SetIndex(int index) => this.index = index;
+        internal void SetIndex(int index) => Index = index;
 
-        public void AddRootObject(GameObject rootObject)
+        public void AddRootObject(Transform rootObject)
         {
-            void Add() => rootObjects.Add(rootObject);
+            void Add() => _rootObjects = [.. _rootObjects, rootObject];
 
             Core.CoreRequiest(Add);
         }

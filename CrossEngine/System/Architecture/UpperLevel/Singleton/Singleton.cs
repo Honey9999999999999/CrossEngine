@@ -19,7 +19,7 @@
 
         public Singleton()
         {
-            if(_instance != null)
+            if (_instance != null)
             {
                 throw new CrossException($"{_instance.GetType()} was be initialized");
             }

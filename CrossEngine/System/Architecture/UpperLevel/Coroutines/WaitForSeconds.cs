@@ -1,4 +1,6 @@
-﻿namespace CrossEngine
+﻿using CrossEngine.System;
+
+namespace CrossEngine
 {
     public readonly struct WaitForSeconds(double delay) : ICoroutineDelay
     {

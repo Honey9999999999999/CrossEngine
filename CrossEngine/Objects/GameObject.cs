@@ -1,12 +1,13 @@
 ﻿using CrossEngine.System;
+using CrossEngine.System.Components;
 using CrossEngine.System.Kernel;
 
 namespace CrossEngine
 {
-    public class GameObject : object
+    public class GameObject : object, IComponentble
     {
-        internal static GameObject? gameObject;
-        internal Action OnEnable;
+        internal event Action? OnEnable;
+        internal static GameObject? gameObject;        
 
         public bool Enabled {
             get
@@ -21,12 +22,12 @@ namespace CrossEngine
                 {
                     OnEnable?.Invoke();
                 }                
-            } 
+            }
         }
         public string Name { get; set; }
         public string Tag { get; set; } = "Default";
 
-        public Transform Transform { get; } = new();
+        public Transform Transform => GetComponent<Transform>();
 
         private readonly Dictionary<Type, Component> _componentsMap = [];
         private bool _enabled = true;
@@ -34,7 +35,9 @@ namespace CrossEngine
         public GameObject()
         {
             Name = GetType().Name;
-            SceneManager.GetActiveScene().AddRootObject(this);
+            AddComponent<Transform>();
+
+            SceneManager.GetActiveScene().AddRootObject(Transform);
         }
 
         public GameObject(string name) : this() { Name = name; }
@@ -47,39 +50,29 @@ namespace CrossEngine
 
         public TComponent GetComponent<TComponent>() where TComponent : Component, new()
         {
-            return (TComponent)_componentsMap[typeof(TComponent)];
+            return _componentsMap.ContainsKey(typeof(TComponent))
+                ? (TComponent)_componentsMap[typeof(TComponent)]
+                : throw new CrossException($"GameObject '{Name}' has't Component '{typeof(TComponent).Name}'");
         }
 
         public bool TryGetComponent<TComponent>(out TComponent? crossBehaviour) where TComponent : Component, new()
         {
-            if (_componentsMap.ContainsKey(typeof(TComponent)))
-            {
-                crossBehaviour = (TComponent)_componentsMap[typeof(TComponent)];
-
-                return true;
-            }
-            else
-            {
-                crossBehaviour = null;
-
-                return false;
-            }
+            bool isContains = _componentsMap.ContainsKey(typeof(TComponent));
+            crossBehaviour = isContains ? (TComponent)_componentsMap[typeof(TComponent)] : null;
+            return isContains;
         }
 
-        public Component[] GetComponents()
-        {
-            return [.. _componentsMap.Values];
-        }
+        public Component[] GetComponents() => [.. _componentsMap.Values];
 
         public T[] GetComponents<T>() where T : Component
         {
-            List<T> componentsList = [];
+            T[] componentsList = [];
 
             foreach (var component in _componentsMap.Values)
             {
                 if (component is T t)
                 {
-                    componentsList.Add(t);
+                    componentsList = [.. componentsList, t];
                 }
             }
 

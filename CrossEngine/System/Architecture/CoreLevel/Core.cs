@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using CrossEngine;
 
 namespace CrossEngine.System.Kernel
 {
@@ -76,13 +77,15 @@ namespace CrossEngine.System.Kernel
 
         private IEnumerator UpdateRoutine()
         {
-            List<GameObject> rootGameObjects = SceneManager.GetActiveScene().GetRootGameObjects();
-
+            //GameObject starter = new("Starter");
+            //starter.AddComponent<TestScript>();
             while (true)
             {
-                foreach (var gameObject in rootGameObjects)
+                Transform[] rootObjects = SceneManager.GetActiveScene().GetRootObjects();
+
+                foreach (var transform in rootObjects)
                 {
-                    foreach (CrossBehaviour component in gameObject.GetComponents<CrossBehaviour>())
+                    foreach (CrossBehaviour component in transform.GetComponents<CrossBehaviour>())
                     {
                         component.Update();
                     }
@@ -92,13 +95,13 @@ namespace CrossEngine.System.Kernel
         }
         private IEnumerator FixedUpdateRoutine()
         {
-            List<GameObject> rootGmeObjects = SceneManager.GetActiveScene().GetRootGameObjects();
-
             while (true)
             {
-                foreach (var gameObject in rootGmeObjects)
+                Transform[] rootObjects = SceneManager.GetActiveScene().GetRootObjects();
+
+                foreach (var transform in rootObjects)
                 {
-                    foreach(CrossBehaviour component in gameObject.GetComponents<CrossBehaviour>())
+                    foreach(CrossBehaviour component in transform.GetComponents<CrossBehaviour>())
                     {
                         component.FixedUpdate();
                     }
