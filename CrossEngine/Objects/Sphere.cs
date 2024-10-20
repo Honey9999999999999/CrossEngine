@@ -1,9 +1,10 @@
 ﻿using CrossEngine.Render;
+using CrossEngine.System;
 using System.Numerics;
 
 namespace CrossEngine.Objects
 {
-    public class Sphere : GameObject, IRayCastable
+    public class Sphere : Component, IRayCastable
     {
         public Ray.Hit Cast(Ray ray)
         {

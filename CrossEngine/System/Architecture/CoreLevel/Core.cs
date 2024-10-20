@@ -77,8 +77,6 @@ namespace CrossEngine.System.Kernel
 
         private IEnumerator UpdateRoutine()
         {
-            //GameObject starter = new("Starter");
-            //starter.AddComponent<TestScript>();
             while (true)
             {
                 Transform[] rootObjects = SceneManager.GetActiveScene().GetRootObjects();

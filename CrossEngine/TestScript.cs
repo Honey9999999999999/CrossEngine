@@ -9,16 +9,14 @@ namespace CrossEngine
 {
     internal class TestScript : CrossBehaviour
     {
-        public Camera camera;
-        private float DeltaTime;
-        private DateTime _oldtime;
+        public GameObject camera;
 
         public override void Start()
         {
             base.Start();
 
-            camera = new();
-            camera.AddComponent<TestScript2>();
+            camera = new("Camera");
+            camera.AddComponent<Camera>();
 
             //StartCoroutine(Hi());
             StartCoroutine(Render());
@@ -37,8 +35,6 @@ namespace CrossEngine
             {
                 camera.Transform.Rotation -= Vector3.UnitZ * Time.DeltaTime;
             }
-
-            camera.Transform.Rotation += Vector3.UnitZ * Time.DeltaTime;
         }
 
         IEnumerator Render()
@@ -50,25 +46,34 @@ namespace CrossEngine
             camera.Transform.Rotation = new(MathF.PI / 2, 0, 0);
 
             ConsoleScreen screen = new(240, 60, 8, 4);
-            ConsoleRenderer renderer = new(screen, ref camera);
 
-            List<Sphere> list = [new(), new(), new()];
+            Camera cameraCom = camera.GetComponent<Camera>();
+            ConsoleRenderer renderer = new(screen, ref cameraCom);
 
-            Vector3 pos = list[0].Transform.Position;
+            List<GameObject> gameObjectList = [new("Sphere 1"), new("Sphere 2"), new("Sphere 3")];
+            List<Sphere> sphereList = [];
+
+            foreach(GameObject gameObject in gameObjectList)
+            {
+                gameObject.AddComponent<Sphere>();
+                sphereList.Add(gameObject.GetComponent<Sphere>());
+            }
+
+            Vector3 pos = gameObjectList[0].Transform.Position;
             // sphere.Transform.Position = -Vector3.UnitZ * 5;
 
-            list[0].Transform.Position = new Vector3(3, 0, 0);
-            list[1].Transform.Position = new Vector3(0, -15, 0);
+            gameObjectList[0].Transform.Position = new Vector3(3, 0, 0);
+            gameObjectList[1].Transform.Position = new Vector3(0, -15, 0);
 
             DateTime start = DateTime.UtcNow;
             int frames = 0;
             while (true)
             {
                 Console.Title = $"FPS: {-1d / (start - (start = DateTime.UtcNow)).TotalSeconds:0.00}";
-                list[0].Transform.Scale = Vector3.One * (MathF.Cos(frames++ * 0.01f) * 0.5f + 1);
-                list[0].Transform.Position = pos + new Vector3(1, 0, 0) * (MathF.Sin(frames++ * 0.01f));
+                gameObjectList[0].Transform.Scale = Vector3.One * (MathF.Cos(frames++ * 0.01f) * 0.5f + 1);
+                gameObjectList[0].Transform.Position = pos + new Vector3(1, 0, 0) * (MathF.Sin(frames++ * 0.01f));
 
-                ConsoleOutput.Write(renderer.Render([.. list]));
+                ConsoleOutput.Write(renderer.Render([.. sphereList]));
 
                 Console.SetCursorPosition(0, 0);
                 Console.Write(Debug.Tree.FromObject(camera, Debug.Tree.Config.PublicFields));

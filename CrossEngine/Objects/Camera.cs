@@ -1,8 +1,8 @@
-﻿using System.Collections;
+﻿using CrossEngine.System;
 
 namespace CrossEngine
 {
-    public class Camera : GameObject
+    public class Camera : Component
     {
         public float RayLength = 1;        
     }

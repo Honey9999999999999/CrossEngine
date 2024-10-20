@@ -4,24 +4,25 @@ using CrossEngine.System.Kernel;
 
 namespace CrossEngine
 {
-    public class GameObject : object, IComponentble
+    public sealed class GameObject : object, IComponentble
     {
         internal event Action? OnEnable;
-        internal static GameObject? gameObject;        
+        internal static GameObject? gameObject;
 
-        public bool Enabled {
+        public bool Enabled
+        {
             get
             {
                 return _enabled;
             }
-            set 
+            set
             {
                 _enabled = value;
 
-                if(Core.isRunPlayMode && Enabled)
+                if (Core.isRunPlayMode && Enabled)
                 {
                     OnEnable?.Invoke();
-                }                
+                }
             }
         }
         public string Name { get; set; }
@@ -32,20 +33,28 @@ namespace CrossEngine
         private readonly Dictionary<Type, Component> _componentsMap = [];
         private bool _enabled = true;
 
-        public GameObject()
+        public GameObject() : this("GameObject") { }
+        public GameObject(string name)
         {
-            Name = GetType().Name;
+            Name = name;
             AddComponent<Transform>();
-
             SceneManager.GetActiveScene().AddRootObject(Transform);
         }
 
-        public GameObject(string name) : this() { Name = name; }
+        public GameObject(Transform parent) : this("GameObject", parent) { }
+        public GameObject(string name, Transform parent)
+        {
+            Name = name;
+            AddComponent<Transform>();
+            Transform.Parent = parent;
+            parent.AddChild(Transform);
+        }
 
         public void AddComponent<TComponent>() where TComponent : Component, new()
         {
             gameObject = this;
             _componentsMap[typeof(TComponent)] = new TComponent();
+            gameObject = null;
         }
 
         public TComponent GetComponent<TComponent>() where TComponent : Component, new()

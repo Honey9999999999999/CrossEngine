@@ -27,6 +27,17 @@ namespace CrossEngine
         public Vector3 Scale { get; set; }
         public Vector3 Forward => Vector3.TransformNormal(Vector3.UnitZ, RotationMatrix);
 
+        public Transform Parent { get => _parent; 
+            set 
+            {
+                _parent = this != value
+                ? value
+                : throw new CrossException("GameObject cannot be parent itself");
+            }
+        }
+
+        private Transform _parent;
+
         private Vector3 _rotation;
         private Transform[] _childs;
 

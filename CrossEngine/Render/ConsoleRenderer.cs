@@ -58,7 +58,7 @@ namespace CrossEngine.Render
         {
             CharInfo sky = new() {
                 Char = new('@'),
-                Attributes = (short)ConsoleColor.DarkBlue << 4
+                //Attributes = (short)ConsoleColor.DarkBlue// << 4
             };
             Array.Fill(char_buffer, sky);
             Array.Fill(depth_buffer, float.PositiveInfinity);
@@ -70,12 +70,6 @@ namespace CrossEngine.Render
                 Matrix4x4 projection = Matrix4x4.CreatePerspectiveFieldOfView(MathF.PI / 3f, screen.AspectRatio, 0.001f, 1000f),
                           rotation = camera.Transform.RotationMatrix,
                           translation = Matrix4x4.CreateTranslation(obj.Bounds.Center - camera.Transform.Position);
-                Vector3 min = Vector3.Transform(obj.Bounds.Min, rotation * projection * translation);
-                Vector3 max = Vector3.Transform(obj.Bounds.Max, rotation * projection* translation);
-                Console.SetCursorPosition(0, screen.Height / 2);
-                Console.Write(min);
-                Console.SetCursorPosition(0, screen.Height / 2 + 1);
-                Console.Write(max);
 
                 Ray ray = new(camera.Transform.Position, camera.Transform.Forward);
                 for (int i = 0; i < screen.Width; i++)
@@ -108,7 +102,7 @@ namespace CrossEngine.Render
 
                         if (hit.Distance >= depth_buffer[index]) continue;
 
-                        float light = hit.Object != null ? Vector3.Dot(hit.Normal, Vector3.UnitZ) / 2 + 0.5f : 1;
+                        float light = hit.Object != null ? Vector3.Dot(hit.Normal, -Vector3.UnitZ) / 2 + 0.5f : 1;
                         //light = hit.Object == null ? 1 : hit.Distance / 10;
                         char symbol = gradient[(int)(light * (gradient.Length - 1))];
 
