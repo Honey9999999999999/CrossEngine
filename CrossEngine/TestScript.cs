@@ -85,7 +85,7 @@ namespace CrossEngine
             camera.Transform.Rotation = new(MathF.PI / 2, 0, 0);
 
             ConsoleScreen screen = new(240, 60, 8, 4);
-            Renderer renderer = new(screen, ref camera);
+            ConsoleRenderer renderer = new(screen, ref camera);
 
             List<Sphere> list = [new(), new(), new()];
 

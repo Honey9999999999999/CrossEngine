@@ -31,5 +31,7 @@ namespace CrossEngine.Objects
                 Object = this
             };
         }
+
+        public Bounds Bounds => new(Transform.Position, Transform.Scale);
     }
 }

@@ -29,10 +29,10 @@ namespace CrossEngine.Render
         }
 
         [StructLayout(LayoutKind.Explicit)]
-        public struct CharUnion
+        public struct CharUnion(char unicode)
         {
             [FieldOffset(0)]
-            public char UnicodeChar;
+            public char UnicodeChar = unicode;
             [FieldOffset(0)]
             public byte AsciiChar;
         }

@@ -1,4 +1,6 @@
-﻿namespace CrossEngine.Debugger
+﻿using System.Numerics;
+
+namespace CrossEngine.Debugger
 {
     public static class ExtraMath
     {
@@ -25,5 +27,10 @@
 
             return true;
         }
+
+        private const float rad_to_deg = 180 / MathF.PI;
+        private const float deg_to_rad = MathF.PI / 180;
+        public static Vector3 RadToDeg(this Vector3 vector) => vector * rad_to_deg;
+        public static Vector3 DegToRad(this Vector3 vector) => vector * deg_to_rad;
     }
 }

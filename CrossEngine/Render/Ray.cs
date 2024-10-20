@@ -40,5 +40,23 @@ namespace CrossEngine.Render
     public interface IRayCastable
     {
         public Ray.Hit Cast(Ray ray);
+        public Bounds Bounds { get; }
+    }
+
+    public struct Bounds(Vector3 center, Vector3 size)
+    {
+        public Vector3 Center { readonly get; private set; } = center;
+        public Vector3 Size { readonly get; private set; } = size;
+
+        public readonly Vector3 Min => Center - Size * 0.5f;
+        public readonly Vector3 Max => Center + Size * 0.5f;
+
+        public readonly Bounds Translate(Vector3 offset) => new(Center + offset, Size);
+        public readonly Bounds Extend(Vector3 extend) => new(Center + extend / Size, Size + extend / Size);
+        public readonly Bounds Scale(Vector3 scale) => new(Center, Size + scale);
+
+        public static Bounds Translate(Bounds bound, Vector3 offset) => bound.Translate(offset);
+        public static Bounds Extend(Bounds bound, Vector3 extend) => bound.Extend(extend);
+        public static Bounds Scale(Bounds bound, Vector3 scale) => bound.Scale(scale);
     }
 }

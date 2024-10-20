@@ -16,15 +16,16 @@ namespace CrossEngine
                                         value.Y % MathF.Tau,
                                         value.Z % MathF.Tau);
 
-                Matrix4x4 x = Matrix4x4.CreateRotationX(Rotation.X);
-                Matrix4x4 y = Matrix4x4.CreateRotationY(Rotation.Y);
-                Matrix4x4 z = Matrix4x4.CreateRotationZ(Rotation.Z);
+                Matrix4x4 x = Matrix4x4.CreateRotationX(Rotation.X),
+                          y = Matrix4x4.CreateRotationY(Rotation.Y),
+                          z = Matrix4x4.CreateRotationZ(Rotation.Z);
 
                 RotationMatrix = x * y * z;
             }
         }
         public Matrix4x4 RotationMatrix { get; private set; }
         public Vector3 Scale { get; set; }
+        public Vector3 Forward => Vector3.TransformNormal(Vector3.UnitZ, RotationMatrix);
 
         private Vector3 _rotation;
         private Transform[] _childs;

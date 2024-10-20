@@ -84,8 +84,6 @@ namespace CrossEngine
                     // If the object is an array, process each element of the array
                     if (value is IEnumerable enumerable)
                     {
-                        // node.Childs.Add(new($"{objects.Length.GetType()} Length = \"{array.Length}\""));
-                        // nodes.Push((depth + 1, node.Childs[^1], null));
                         int i = 0;
                         foreach (var item in enumerable)
                         {
@@ -115,14 +113,24 @@ namespace CrossEngine
                 return tree;
             }
 
+            private enum FriendlyAttributes
+            {
+                Constructor = 0b10001110111,
+                Property    = 0b00000000000,
+                Method      = 0b10001110111,
+                Field       = 0b00011110111,
+                Event       = 0b00000000000,
+                Type        = 0b00110100111
+            }
+
             private static string AttributesToString(MemberInfo member) => (member switch
             {
-                ConstructorInfo info => $"{info.Attributes:F}",
-                PropertyInfo info    => $"{info.Attributes:F}",
-                MethodInfo info      => $"{info.Attributes:F}",
-                FieldInfo info       => $"{info.Attributes:F}",
-                EventInfo info       => $"{info.Attributes:F}",
-                TypeInfo info        => $"{info.Attributes:F}",
+                ConstructorInfo info => $"{info.Attributes & (MethodAttributes)FriendlyAttributes.Constructor:F}",
+                PropertyInfo info    => $"{info.Attributes & (PropertyAttributes)FriendlyAttributes.Property:F}",
+                MethodInfo info      => $"{info.Attributes & (MethodAttributes)FriendlyAttributes.Method:F}",
+                FieldInfo info       => $"{info.Attributes & (FieldAttributes)FriendlyAttributes.Field:F}",
+                EventInfo info       => $"{info.Attributes & (EventAttributes)FriendlyAttributes.Event:F}",
+                TypeInfo info        => $"{info.Attributes & (TypeAttributes)FriendlyAttributes.Type:F}",
                 _ => string.Empty
             }).Replace(",", string.Empty).Replace("None", string.Empty);
 
@@ -134,7 +142,7 @@ namespace CrossEngine
                 _ => null
             })?.Select(p => $"{p.ParameterType.Name} {p.Name}") ?? []);
 
-            private static string MemberToString(MemberInfo member, object? memberValue) => $"{AttributesToString(member)} {member switch
+            private static string MemberToString(MemberInfo member, object? memberValue) => string.Join(' ', AttributesToString(member), member switch
             {
                 // System.String(char c, int count)
                 ConstructorInfo info => $"{info.DeclaringType}({ParametersToString(info)})",
@@ -148,15 +156,15 @@ namespace CrossEngine
                 // Int32 Sum(Int32 a, Int32 b)
                 MethodInfo info => $"{info.ReturnType.Name} {info.Name}({ParametersToString(info)})",
 
-                // Int32 this[Int32 Index] { get; set; }
-                PropertyInfo info => $"{info.PropertyType.Name} {info.Name}[{ParametersToString(info)}] {{ " +
+                // Int32 Node[Int32 Index] { get; set; }
+                PropertyInfo info => $"{info.PropertyType.Name} {info.Name}[{ParametersToString(info)}] {{ ".Replace("[] ", string.Empty) +
                 info switch
                 {
                     { CanRead: true, CanWrite: true }  => $"{AttributesToString(info.GetMethod)} get; {AttributesToString(info.SetMethod)} set;",   // read and write
                     { CanRead: true, CanWrite: false } => $"{AttributesToString(info.GetMethod)} get;",       // read only
                     { CanRead: false, CanWrite: true } => $"{AttributesToString(info.SetMethod)} set;",       // write only
                     _ => string.Empty                                    // no read, no write
-                } + $" }}".Replace("[] ", string.Empty).Trim(),
+                } + $" }}",
 
                 // Class Node
                 TypeInfo info => info switch
@@ -167,7 +175,7 @@ namespace CrossEngine
                 } + info.Name,
 
                 _ => $"{member}",
-            }}";
+            });
 
             public override readonly string ToString()
             {
