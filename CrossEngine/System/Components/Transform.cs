@@ -38,6 +38,8 @@ namespace CrossEngine
                 RotationMatrix = x * y * z;
             }
         }
+        private Vector3 _rotation;
+
         public Matrix4x4 RotationMatrix { get; private set; }
         public Vector3 Scale { get; set; }
         public Vector3 Forward => Vector3.TransformNormal(Vector3.UnitZ, RotationMatrix);
@@ -50,12 +52,12 @@ namespace CrossEngine
                 _parent = this != value
                 ? value
                 : throw new CrossException("GameObject cannot be parent itself");
+                _parent.AddChild(this);
             }
         }
+        public int ChildCount => _childs.Length;
 
         private Transform _parent;
-
-        private Vector3 _rotation;
         private Transform[] _childs;
 
 
@@ -72,11 +74,13 @@ namespace CrossEngine
 
 
         public Transform[] GetChilds() => _childs;
+
         public void AddChild(Transform transform)
         {
             _childs = this != transform
                 ? [.. _childs, transform]
                 : throw new CrossException("GameObject cannot contain itself");
+            transform._parent = Transform;
         }
     }
 }

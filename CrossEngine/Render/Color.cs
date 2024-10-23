@@ -43,7 +43,7 @@ namespace CrossEngine.Render
         [GeneratedRegex(@"^#?([a-fA-F0-9]{8}|[a-fA-F0-9]{6}|[a-fA-F0-9]{4}|[a-fA-F0-9]{3})$")]
         private static partial Regex HexRegex();
         private static readonly Regex Hex = HexRegex();
-        public static Color FromHex(string text) => !Hex.IsMatch(text) ? default : 
+        public static Color FromHex(string text) => !Hex.IsMatch(text) ? default :
             (text = text.TrimStart('#')).Length switch
             {
                 3 => new(HexToByte(text[0], text[0]),
@@ -74,7 +74,8 @@ namespace CrossEngine.Render
 
         /// <summary> <see langword="float"/> to <see langword="byte"/> conversion </summary>
         /// <returns> <paramref name="value"/> * 255.0 </returns>
-        private static byte FtB(float value) => value switch {
+        private static byte FtB(float value) => value switch
+        {
             >= 1 => byte.MaxValue,
             <= 0 => byte.MinValue,
             _ => (byte)MathF.Round(value * ftb)
@@ -83,7 +84,8 @@ namespace CrossEngine.Render
 
         /// <summary> <see langword="float"/> to <see langword="byte"/> conversion </summary>
         /// <returns> <paramref name="value"/> * 255.0 </returns>
-        private static byte ItB(int value) => value switch {
+        private static byte ItB(int value) => value switch
+        {
             >= byte.MaxValue => byte.MaxValue,
             <= byte.MinValue => byte.MinValue,
             _ => (byte)value
@@ -130,7 +132,8 @@ namespace CrossEngine.Render
             C = Clamp(C + m);
             X = Clamp(X + m);
 
-            return H switch {
+            return H switch
+            {
                 <= 1 => new(alpha, C, X, m),
                 <= 2 => new(alpha, X, C, m),
                 <= 3 => new(alpha, m, C, X),
@@ -155,7 +158,8 @@ namespace CrossEngine.Render
             return 0;
         }
 
-        private static byte HexToByte(string s) => s.Length switch {
+        private static byte HexToByte(string s) => s.Length switch
+        {
             1 => HexToByte(s[0]),
             2 => HexToByte(s[0], s[1]),
             _ => 0

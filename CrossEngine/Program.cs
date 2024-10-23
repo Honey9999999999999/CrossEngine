@@ -1,8 +1,7 @@
 ﻿using CrossEngine;
-using CrossEngine.Objects;
 using CrossEngine.System;
+using CrossEngine.System.Architecture.Interface;
 using CrossEngine.System.Kernel;
-using System.Numerics;
 
 
 new Engine();
@@ -12,14 +11,14 @@ GameObject starter = new("Starter");
 starter.AddComponent<TestScript>();
 
 GameObject debuger = new("Debuger");
-debuger.AddComponent<SceneTree>();
+//debuger.AddComponent<SceneTree>();
 
-GameObject sphere1 = new("Debuger@", debuger.Transform);
-sphere1.AddComponent<Sphere>();
-sphere1.Transform.Position = new Vector3(5, 0, 0);
+GameObject Sphere = new GameObject(debuger.Transform);
 
-GameObject sphere2 = new("DebugerLOL", debuger.Transform);
-sphere2.AddComponent<Sphere>();
-sphere2.Transform.Position = new Vector3(5, 0, 1);
+Console.Clear();
+
+SceneTreeWindow treeWindow = new();
+
+treeWindow.UpdateWithBounds();
 
 Engine.RunPlayMode();

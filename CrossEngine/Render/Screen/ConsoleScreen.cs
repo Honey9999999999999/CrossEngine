@@ -1,23 +1,37 @@
-﻿namespace CrossEngine.Render
+﻿using CrossEngine.System;
+using CrossEngine.System.Kernel;
+
+namespace CrossEngine.Render
 {
-    public readonly struct ConsoleScreen : IScreen
+    public class ConsoleScreen : CoreComponent<ConsoleScreen>, IScreen
     {
-        public readonly int Width { get; }
-        public readonly int Height { get; }
+        public int Width { get; }
+        public int Height { get; }
 
-        public readonly float AspectRatio { get; }
-        public readonly float SymbolAspectRatio { get; }
+        public float AspectRatio { get; }
+        public float SymbolAspectRatio { get; }
 
-        public ConsoleScreen(int width, int height, int symbolWidth, int symbolHeight)
+        private const string _fileName = "ConsoleScreenConfiguration";
+
+
+        public ConsoleScreen()
         {
-            this.Width = width;
-            this.Height = height;
+            ScreenConfiguration configuration;
 
-            AspectRatio = (float)width / height;
-            SymbolAspectRatio = (float)symbolWidth / symbolHeight;
+            configuration = FileManager.IsPathExist(SavePlace.Screen, _fileName)
+                ? FileManager.LoadFromXml<ScreenConfiguration>(SavePlace.Screen, _fileName)
+                : new ScreenConfiguration();
 
-            Console.SetWindowSize(width, height);
-            Console.SetBufferSize(width, height);
+            Width = configuration.Width;
+            Height = configuration.Height;
+
+            AspectRatio = (float)Width / Height;
+            SymbolAspectRatio = configuration.SymbolAspectRatio;
+
+            FileManager.SaveInXml(configuration, _fileName, SavePlace.Screen);
+
+            Console.SetWindowSize(Width, Height);
+            Console.SetBufferSize(Width, Height);
 
             ConsoleOutput.Setup(ConsoleOutput.GetStdHandle(-11), new(Width, Height));
         }

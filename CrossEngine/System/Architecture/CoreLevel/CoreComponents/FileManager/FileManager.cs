@@ -18,7 +18,8 @@ namespace CrossEngine.System
 
             _pathMap = new()
             {
-                [SavePlace.Scenes] = $"{_pathToEngineDirectory}\\{NAME_MAIN_DIRECTORY}\\{SavePlace.Scenes}"
+                [SavePlace.Scenes] = $"{_pathToEngineDirectory}\\{NAME_MAIN_DIRECTORY}\\{SavePlace.Scenes}",
+                [SavePlace.Screen] = $"{_pathToEngineDirectory}\\{NAME_MAIN_DIRECTORY}\\{SavePlace.Screen}"
             };
 
 

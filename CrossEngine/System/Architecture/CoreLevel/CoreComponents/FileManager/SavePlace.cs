@@ -2,6 +2,7 @@
 {
     internal enum SavePlace
     {
-        Scenes
+        Scenes,
+        Screen
     }
 }

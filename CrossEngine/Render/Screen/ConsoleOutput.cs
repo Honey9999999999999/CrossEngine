@@ -1,13 +1,10 @@
-﻿using System.ComponentModel;
-using System;
+﻿using CrossEngine.System;
 using System.Numerics;
 using System.Runtime.InteropServices;
 
-using static System.Net.Mime.MediaTypeNames;
-
 namespace CrossEngine.Render
 {
-    public static class ConsoleOutput
+    internal static class ConsoleOutput
     {
         static IntPtr hConsole;
         static Coord bufferSize;
@@ -21,6 +18,22 @@ namespace CrossEngine.Render
         [DllImport("kernel32.dll", EntryPoint = "WriteConsoleOutputW", CharSet = CharSet.Unicode, SetLastError = true)]
         public static extern bool WriteConsoleOutput(IntPtr hConsoleOutput, CharInfo[] lpBuffer, Coord dwBufferSize, Coord dwBufferCoord, ref SmallRect lpWriteRegion);
         public static void Write(CharInfo[] buffer) => WriteConsoleOutput(hConsole, buffer, bufferSize, bufferCoord, ref writeRegion);
+        public static void Write(CharInfo[] buffer, Vector2 bufferSize, Vector2 bufferCoord, ref SmallRect writeRegion) =>
+            WriteConsoleOutput(
+                    hConsole,
+                    buffer,
+                    new()
+                    {
+                        X = (short)bufferSize.X,
+                        Y = (short)bufferSize.Y
+                    },
+                    new()
+                    {
+                        X = (short)bufferCoord.X,
+                        Y = (short)bufferCoord.Y
+                    },
+                    ref writeRegion
+                );
 
         //[DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "ReadConsoleInputW")]
         //static extern bool ReadConsoleInput(IntPtr hConsoleInput, [Out] CharInfo[] lpBuffer, uint nLength, out uint lpNumberOfEventsRead);
@@ -32,66 +45,6 @@ namespace CrossEngine.Render
             public short Y;
         }
 
-        [StructLayout(LayoutKind.Explicit)]
-        public struct CharUnion(char unicode)
-        {
-            [FieldOffset(0)]
-            public char UnicodeChar = unicode;
-            [FieldOffset(0)]
-            public byte AsciiChar;
-        }
-
-        [StructLayout(LayoutKind.Explicit)]
-        public struct CharInfo
-        {
-            [FieldOffset(0)]
-            public CharUnion Char;
-            [FieldOffset(2)]
-            public short Attributes;
-        }
-
-        public enum CharInfoAttributes
-        {
-            /// <summary>  Text color contains blue. </summary>
-            FOREGROUND_BLUE = 0x0001,
-            /// <summary> Text color contains green. </summary>
-            FOREGROUND_GREEN = 0x0002,
-            /// <summary> Text color contains red. </summary>
-            FOREGROUND_RED = 0x0004,
-            /// <summary> Text color is intensified. </summary>
-            FOREGROUND_INTENSITY = 0x0008,
-            /// <summary> Background color contains blue. </summary>
-            BACKGROUND_BLUE = 0x0010,
-            /// <summary> Background color contains green. </summary>
-            BACKGROUND_GREEN = 0x0020,
-            /// <summary> Background color contains red. </summary>
-            BACKGROUND_RED = 0x0040,
-            /// <summary> Background color is intensified. </summary>
-            BACKGROUND_INTENSITY = 0x0080,
-            /// <summary> Leading byte. </summary>
-            COMMON_LVB_LEADING_BYTE = 0x0100,
-            /// <summary> Trailing byte. </summary>
-            COMMON_LVB_TRAILING_BYTE = 0x0200,
-            /// <summary> Top horizontal. </summary>
-            COMMON_LVB_GRID_HORIZONTAL = 0x0400,
-            /// <summary> Left vertical. </summary>
-            COMMON_LVB_GRID_LVERTICAL = 0x0800,
-            /// <summary> Right vertical. </summary>
-            COMMON_LVB_GRID_RVERTICAL = 0x1000,
-            /// <summary> Reverse foreground and background attribute. </summary>
-            COMMON_LVB_REVERSE_VIDEO = 0x4000,
-            /// <summary> Underscore. </summary>
-            COMMON_LVB_UNDERSCORE = 0x8000
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct SmallRect
-        {
-            public short Left;
-            public short Top;
-            public short Right;
-            public short Bottom;
-        }
 
         //[StructLayout(LayoutKind.Explicit)]
         //public struct INPUT_RECORD

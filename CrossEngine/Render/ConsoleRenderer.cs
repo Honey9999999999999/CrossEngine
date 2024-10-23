@@ -1,20 +1,17 @@
-using CrossEngine.Objects;
-
-using System;
+using CrossEngine.System;
+using CrossEngine.System.Interface;
 using System.Numerics;
-
-using static CrossEngine.Render.ConsoleOutput;
 
 namespace CrossEngine.Render
 {
 
-    public class Buffer
+    internal class Buffer
     {
         //private readonly [] char_buffer;
         private readonly float[] depth_buffer;
     }
 
-    public class ConsoleRenderer
+    internal class ConsoleRenderer : Singleton<ConsoleRenderer>
     {
         private readonly char[] gradient = [' ', '.', '`', ';', 'I', 'S', 'O', '%', '&', '@'];
         //private readonly char[] gradient = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '@'];
@@ -25,21 +22,31 @@ namespace CrossEngine.Render
         private readonly CharInfo[] char_buffer;
         private readonly float[] depth_buffer;
 
-        private readonly ConsoleScreen screen;
+        private readonly ConsoleWindow window;
         private readonly Camera camera;
 
-        public ConsoleRenderer(ConsoleScreen screen, ref Camera camera)
+        //public ConsoleRenderer(ConsoleScreen screen, ref Camera camera)
+        //{
+        //    this.camera = camera;
+        //    this.screen = screen;
+
+        //    char_buffer = new CharInfo[screen.Width * screen.Height];
+        //    depth_buffer = new float[screen.Width * screen.Height];
+
+        //    camera.RayLength = screen.AspectRatio / 2;
+        //}
+        public ConsoleRenderer(ConsoleWindow window, ref Camera camera)
         {
             this.camera = camera;
-            this.screen = screen;
+            this.window = window;
 
-            char_buffer = new CharInfo[screen.Width * screen.Height];
-            depth_buffer = new float[screen.Width * screen.Height];
+            char_buffer = new CharInfo[window.WriteWidth * window.WriteHeight];
+            depth_buffer = new float[window.WriteWidth * window.WriteHeight];
 
-            camera.RayLength = screen.AspectRatio / 2;
+            camera.RayLength = ((float)window.WriteWidth / window.WriteHeight) / 2;
         }
 
-        public CharInfo[] Render(List<IRayCastable> gameObjects)//, List<ILightSource> light)
+        internal CharInfo[] Render(List<IRayCastable> gameObjects)//, List<ILightSource> light)
         {
             CharInfo sky = new()
             {
@@ -50,8 +57,8 @@ namespace CrossEngine.Render
             Array.Fill(depth_buffer, float.PositiveInfinity);
 
             // The FUN part
-            Parallel.ForEach(gameObjects, obj =>
-            //foreach (IRayCastable obj in gameObjects)
+            //Parallel.ForEach(gameObjects, obj =>
+            foreach (IRayCastable obj in gameObjects)
             {
                 //Matrix4x4 projection = Matrix4x4.CreatePerspectiveFieldOfView(MathF.PI / 3f, screen.AspectRatio, 0.001f, 1000f),
                 //          rotation = camera.Transform.RotationMatrix,
@@ -69,24 +76,24 @@ namespace CrossEngine.Render
                 //char_buffer[indx].Attributes = (int)ConsoleColor.Black << 4 | (int)ConsoleColor.White;
                 //Console.WriteLine(point - camera.Transform.Position);
 
-                for (int i = 0; i < screen.Width; i++)
+                for (int i = 0; i < window.WriteWidth; i++)
                 {
-                    for (int j = 0; j < screen.Height; j++)
+                    for (int j = 0; j < window.WriteHeight; j++)
                     {
                         //Parallel.For(0, screen.Width * screen.Height, i =>
                         //{
                         //int j = i / screen.Width; i %= screen.Width;
 
-                        int index = j * screen.Width + i;
-                        float u = i * 2.0f / screen.Width - 1,
-                                v = j * 2.0f / screen.Height - 1;
-                        Vector2 uv = new(u * screen.AspectRatio / screen.SymbolAspectRatio, v);
+                        int index = j * window.WriteWidth + i;
+                        float u = i * 2.0f / window.WriteWidth - 1,
+                                v = j * 2.0f / window.WriteHeight - 1;
+                        Vector2 uv = new(u * ConsoleScreen.instance.AspectRatio * ConsoleScreen.instance.SymbolAspectRatio, v);
 
                         ray.Direction = Vector3.Transform(new Vector3(uv, camera.RayLength), camera.Transform.RotationMatrix);
 
                         Ray.Hit hit = obj.Cast(ray);
 
-                        if (i == screen.Width / 2 && j == screen.Height / 2)
+                        if (i == window.WriteWidth / 2 && j == window.WriteHeight / 2)
                         {
                             // symbol = 'X';
                             //SetPixel(i, j, ConsoleColor.White);
@@ -113,7 +120,7 @@ namespace CrossEngine.Render
                         //});
                     }
                 }
-            });
+            }//);
             return char_buffer;
         }
 

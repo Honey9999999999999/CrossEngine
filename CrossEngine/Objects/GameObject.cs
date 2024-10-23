@@ -8,6 +8,8 @@ namespace CrossEngine
     {
         internal event Action? OnEnable;
         internal static GameObject? gameObject;
+        internal static event Action? OnGameObjectBeCreated;
+        internal static event Action? OnGameObjectBeDestroyed;
 
         public bool Enabled
         {
@@ -36,26 +38,22 @@ namespace CrossEngine
         public GameObject() : this("GameObject") { }
         public GameObject(string name) : this(name, null) { }
         public GameObject(Transform parent) : this("GameObject", parent) { }
-        public GameObject(string name, Transform parent)
+        public GameObject(string name, Transform? parent)
         {
             Name = name;
             AddComponent<Transform>();
 
             if (parent != null)
             {
-                EstablishingFamilyTies(parent);
+                parent.AddChild(Transform);
+                OnGameObjectBeCreated?.Invoke();
                 return;
             }
             if (SceneManager.TryGetActiveScene(out Scene scene))
             {
-                EstablishingFamilyTies(scene.RootNode.Transform);
+                scene.RootNode.Transform.AddChild(Transform);
+                OnGameObjectBeCreated?.Invoke();
             }
-        }
-
-        private void EstablishingFamilyTies(Transform parent)
-        {
-            Transform.Parent = parent;
-            parent.AddChild(Transform);
         }
 
         public void AddComponent<TComponent>() where TComponent : Component, new()
@@ -101,7 +99,7 @@ namespace CrossEngine
         {
             return TryGetGameObjectWithName(name, out GameObject gameObject, SceneManager.GetActiveScene().RootNode.Transform.GetChilds())
                 ? gameObject
-                : throw new CrossException($"GameObject with name '{name} is not find.'");
+                : throw new CrossException($"GameObject with name '{name} is not found.'");
         }
         public static bool TryGetGameObjectWithName(string name, out GameObject gameObject)
         {

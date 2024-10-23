@@ -8,6 +8,7 @@ namespace CrossEngine.System
         public static event Action? OnSceneStarted;
         public static event Action? OnSceneStoped;
 
+        public static event Action? OnSceneUploading;
         public static event Action? OnSceneLoaded;
 
         public int sceneCount => _scenesMap.Count;
@@ -81,7 +82,7 @@ namespace CrossEngine.System
 
             return instance._activeScene;
         }
-        internal static bool TryGetActiveScene(out Scene scene)
+        internal static bool TryGetActiveScene(out Scene? scene)
         {
             bool isContains = instance._activeScene != null;
             scene = isContains ? instance._activeScene : null;
@@ -105,6 +106,11 @@ namespace CrossEngine.System
         }
         public static void LoadScene(string name)
         {
+            if (instance._activeScene != null)
+            {
+                OnSceneUploading?.Invoke();
+            }
+
             instance._activeScene = instance.GetScene(name);
 
             OnSceneLoaded?.Invoke();
