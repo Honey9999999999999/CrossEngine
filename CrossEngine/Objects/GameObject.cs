@@ -56,11 +56,13 @@ namespace CrossEngine
             }
         }
 
-        public void AddComponent<TComponent>() where TComponent : Component, new()
+        public TComponent AddComponent<TComponent>() where TComponent : Component, new()
         {
             gameObject = this;
             _componentsMap[typeof(TComponent)] = new TComponent();
             gameObject = null;
+
+            return (TComponent)_componentsMap[typeof(TComponent)];
         }
 
         public TComponent GetComponent<TComponent>() where TComponent : Component, new()

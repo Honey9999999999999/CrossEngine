@@ -2,7 +2,7 @@
 
 namespace CrossEngine.System.Kernel
 {
-    internal class Core : Singleton<Core>
+    internal sealed class Core : Singleton<Core>
     {
         public static event Action? OnInitialized;
         public static event Action? OnUpdateStarted;
@@ -26,7 +26,7 @@ namespace CrossEngine.System.Kernel
         public static void RunPlayMode()
         {
             _isRunPlayMode = true;
-            instance.RunThreadUpdate();
+            Instance.RunThreadUpdate();
         }
 
         private void RunThreadUpdate()

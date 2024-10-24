@@ -1,9 +1,10 @@
 ﻿using CrossEngine.Render;
+using CrossEngine.System.FSM;
 using System.Numerics;
 
 namespace CrossEngine.System.Interface
 {
-    internal abstract class ConsoleWindow
+    internal abstract class ConsoleWindow : IState
     {
         public Vector2 Position { get; set; }
         public Vector2 Size { get; set; }
@@ -82,13 +83,32 @@ namespace CrossEngine.System.Interface
                 _activeFrame[$"{Position.X + Size.X - 1} {i}"] = _activeWindow[4];
             }
         }
+        
 
+        public void Enter()
+        {
+            UpdateWithBounds(true);
+        }
 
-        protected abstract CharInfo[] BuildCharArray();
-        public void Update()
+        public void Exit()
+        {
+            UpdateWithBounds();
+        }
+
+        public virtual void Update()
+        {
+            if (Input.GetKeyDown(SharpHook.Native.KeyCode.VcTab))
+            {
+
+            }
+        }
+
+        public void UpdateInfo()
         {
             ConsoleOutput.Write(BuildCharArray(), Size - new Vector2(2, 2), Vector2.Zero, ref _writeRect);
         }
+
+        protected abstract CharInfo[] BuildCharArray();
 
         public void UpdateWithBounds(bool isActive = false)
         {
@@ -121,6 +141,6 @@ namespace CrossEngine.System.Interface
         }
 
         public bool isBounds(int x, int y) => ((x == Position.X || x == Position.X + Size.X - 1) && (y == Position.Y || y == Position.Y + Size.Y - 1))
-                                           || ((x == Position.X || x == Position.X + Size.X - 1) ^ (y == Position.Y || y == Position.Y + Size.Y - 1));
+                                           || ((x == Position.X || x == Position.X + Size.X - 1)  ^ (y == Position.Y || y == Position.Y + Size.Y - 1));
     }
 }

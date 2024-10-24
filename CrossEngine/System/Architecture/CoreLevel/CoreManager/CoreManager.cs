@@ -1,31 +1,40 @@
 ﻿namespace CrossEngine.System.Kernel
 {
-    public class CoreManager : Singleton<CoreManager>
+    internal class CoreManager : Singleton<CoreManager>
     {
         public static event Action? OnStartLoading;
         public static event Action? OnLoaded;
 
-        public static bool isLoading { get; private set; }
+        public static bool IsLoading { get; private set; }
 
-        private Dictionary<TypeConfig, CoreLoaderConfig> _coreConfigsMap = new()
+        private readonly Dictionary<Type, CoreLoaderConfig> _coreConfigsMap = new()
         {
-            [TypeConfig.ConsoleCore] = new ConsoleCoreConfig(),
-            [TypeConfig.FormCore] = new FormCoreConfig()
+            [typeof(ConsoleCoreConfig)] = new ConsoleCoreConfig(),
+            [typeof(FormCoreConfig)] = new FormCoreConfig()
         };
+        private CoreLoaderConfig? _currentConfig;
 
-        public static void LoadCoreWithConfig(TypeConfig type)
+        public static void LoadCoreWithConfig<TCoreConfig>(TCoreConfig coreConfig) where TCoreConfig : Type
         {
-            isLoading = true;
+            Instance._currentConfig = Instance._coreConfigsMap[coreConfig];
+            IsLoading = true;
             OnStartLoading?.Invoke();
 
-            Console.WriteLine($"{type} is start loading...\n");
+            Console.WriteLine($"{coreConfig} is start loading...\n");
 
-            CoreLoader.LoadCore(instance._coreConfigsMap[type]);
+            CoreLoader.LoadCore(Instance._coreConfigsMap[coreConfig]);
 
-            isLoading = false;
+            IsLoading = false;
             OnLoaded?.Invoke();
 
-            Console.WriteLine($"\n{type} is loaded.\n");
+            Console.WriteLine($"\n{coreConfig} is loaded.\n");
+        }
+
+        public static TCoreComponent GetCoreComponent<TCoreComponent>() where TCoreComponent : IInitializeble, new()
+        {
+            if(Instance._currentConfig is null) throw new CrossException("Core config is not defined.");
+
+            return Instance._currentConfig.GetCoreComponent<TCoreComponent>();
         }
     }
 }

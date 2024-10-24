@@ -31,27 +31,27 @@ namespace CrossEngine.System
             }
         }
 
-        public static void SaveInXml<T>(T obj, string name, SavePlace location) where T : class
+        public void SaveInXml<T>(T obj, string name, SavePlace location) where T : class
         {
-            using FileStream fs = new($"{instance._pathMap[location]}\\{name}.xml", FileMode.OpenOrCreate);
+            using FileStream fs = new($"{_pathMap[location]}\\{name}.xml", FileMode.OpenOrCreate);
             new XmlSerializer(typeof(T)).Serialize(fs, obj);
         }
 
-        public static T LoadFromXml<T>(SavePlace location, string name) where T : class
+        public T LoadFromXml<T>(SavePlace location, string name) where T : class
         {
             if (!IsPathExist(location, name))
             {
-                throw new CrossException($"This path : '{instance._pathMap[location]}\\{name}.xml' has not exist.");
+                throw new CrossException($"This path : '{_pathMap[location]}\\{name}.xml' has not exist.");
             }
 
-            using FileStream fs = new FileStream($"{instance._pathMap[location]}\\{name}.xml", FileMode.OpenOrCreate);
+            using FileStream fs = new FileStream($"{_pathMap[location]}\\{name}.xml", FileMode.OpenOrCreate);
 
             return new XmlSerializer(typeof(T)).Deserialize(fs) as T;
         }
 
-        public static bool IsPathExist(SavePlace location, string name)
+        public bool IsPathExist(SavePlace location, string name)
         {
-            return File.Exists($"{instance._pathMap[location]}\\{name}.xml");
+            return File.Exists($"{_pathMap[location]}\\{name}.xml");
         }
     }
 }

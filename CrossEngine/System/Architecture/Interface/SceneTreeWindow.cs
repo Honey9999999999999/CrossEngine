@@ -17,15 +17,17 @@ namespace CrossEngine.System.Architecture.Interface
                 new CharInfo(']', ConsoleColor.White)
             ];
 
+        private SceneTree _tree;
+
         public SceneTreeWindow() : base()
         {
-            SceneTree.OnTreeUpdated += Update;
+            SceneTree.OnTreeUpdated += UpdateInfo;
+            _tree = Engine.GetCoreComponent<SceneTree>();
         }
 
         protected override CharInfo[] BuildCharArray()
         {
-            int index = 0;
-            CharInfo[] buffer = BuildBuffer(SceneTree.instance.Trunck, ref index);
+            CharInfo[] buffer = BuildBuffer();
 
             if(buffer.Length < WriteWidth * WriteHeight)
             {
@@ -41,23 +43,14 @@ namespace CrossEngine.System.Architecture.Interface
             return buffer;
         }
 
-        private CharInfo[] BuildBuffer(Branch mainBranch, ref int index)
+        private CharInfo[] BuildBuffer()
         {
             CharInfo[] buffer = [];
+            Branch[] visibleBranches = _tree.VisibleBranches;
 
-            if (index < WriteHeight)
+            for (int i = 0; i < WriteHeight && i < visibleBranches.Length; i++)
             {
-                buffer = ConcateBuffers(buffer, BuildString(mainBranch));
-                index++;
-
-                if (mainBranch.IsParent && mainBranch.IsOpen)
-                {
-                    foreach (Branch branch in mainBranch.Branches)
-                    {
-                        buffer = ConcateBuffers(buffer, BuildBuffer(branch, ref index));
-                        if (index >= WriteHeight) continue;
-                    }
-                }
+                buffer = ConcateBuffers(buffer, BuildString(visibleBranches[i]));
             }
 
             return buffer;
@@ -102,6 +95,11 @@ namespace CrossEngine.System.Architecture.Interface
             }
 
             return str;
+        }
+
+        public override void Update()
+        {
+            
         }
     }
 }

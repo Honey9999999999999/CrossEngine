@@ -2,20 +2,22 @@
 
 namespace CrossEngine.System
 {
-    internal sealed class Engine : Singleton<Engine>
+    internal sealed class Engine
     {
-        public static TypeConfig currentConfig { get; private set; }
+        private static Dictionary<TypeConfig, Type> _configsMap = new()
+        {
+            [TypeConfig.ConsoleCore] = typeof(ConsoleCoreConfig),
+            [TypeConfig.FormCore] = typeof(FormCoreConfig)
+        };
 
-        public Engine()
+        private Engine() { }
+
+        public static void Initialize(TypeConfig config)
         {
             _ = new CoreManager();
             _ = new CoreLoader();
-        }
 
-        public static void StartCore(TypeConfig config)
-        {
-            CoreManager.LoadCoreWithConfig(config);
-            currentConfig = config;
+            CoreManager.LoadCoreWithConfig(_configsMap[config]);
         }
 
         public static void RunPlayMode()
@@ -26,5 +28,10 @@ namespace CrossEngine.System
         {
             Core.StopRunPlayMode();
         }
+
+        public static TCoreComponent GetCoreComponent<TCoreComponent>() where TCoreComponent : IInitializeble, new()
+        {
+            return CoreManager.GetCoreComponent<TCoreComponent>();
+        } 
     }
 }

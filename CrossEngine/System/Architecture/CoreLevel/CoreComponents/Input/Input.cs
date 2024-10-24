@@ -1,4 +1,5 @@
-﻿using CrossEngine.System.Kernel;
+﻿using CrossEngine.System;
+using CrossEngine.System.Kernel;
 using SharpHook;
 using SharpHook.Native;
 
@@ -6,11 +7,15 @@ namespace CrossEngine
 {
     public class Input : CoreComponent<Input>
     {
-        public static bool anyKeyDown => instance._keys.Count > 0;
+        internal static event Action? OnAnyKeyDown;
+
+        public static bool anyKeyDown => Instance._keys.Count > 0;
 
         private TaskPoolGlobalHook global_hook = new TaskPoolGlobalHook();
         private List<KeyCode> _keys = [];
         private List<KeyCode> _oldKeys = [];
+
+        private static Input Instance => Engine.GetCoreComponent<Input>();
 
         public override void Initialize()
         {
@@ -22,6 +27,8 @@ namespace CrossEngine
             {
                 var key = event_args.Data.KeyCode;
                 if (!_keys.Contains(key)) _keys.Add(key);
+
+                OnAnyKeyDown?.Invoke();
             };
 
             global_hook.KeyReleased += (sender, event_args) =>
@@ -36,7 +43,7 @@ namespace CrossEngine
 
         public static bool GetKey(KeyCode key)
         {
-            if (instance._keys.Contains(key))
+            if (Instance._keys.Contains(key))
             {
                 return true;
             }
@@ -46,7 +53,7 @@ namespace CrossEngine
 
         public static bool GetKeyUp(KeyCode key)
         {
-            if (instance._oldKeys.Contains(key) && !instance._keys.Contains(key))
+            if (Instance._oldKeys.Contains(key) && !Instance._keys.Contains(key))
             {
                 return true;
             }
@@ -56,7 +63,7 @@ namespace CrossEngine
 
         public static bool GetKeyDown(KeyCode key)
         {
-            if (!instance._oldKeys.Contains(key) && instance._keys.Contains(key))
+            if (!Instance._oldKeys.Contains(key) && Instance._keys.Contains(key))
             {
                 return true;
             }

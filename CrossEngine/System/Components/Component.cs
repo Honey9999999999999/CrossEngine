@@ -15,9 +15,9 @@ namespace CrossEngine.System
 
             GameObject = gameObject;
         }
-        public void AddComponent<TComponent>() where TComponent : Component, new()
+        public TComponent AddComponent<TComponent>() where TComponent : Component, new()
         {
-            GameObject.AddComponent<TComponent>();
+            return GameObject.AddComponent<TComponent>();
         }
         public TComponent GetComponent<TComponent>() where TComponent : Component, new()
         {

@@ -1,5 +1,7 @@
 using CrossEngine.System;
+using CrossEngine.System.Architecture.Interface;
 using CrossEngine.System.Interface;
+using CrossEngine.System.Kernel;
 using System.Numerics;
 
 namespace CrossEngine.Render
@@ -11,7 +13,7 @@ namespace CrossEngine.Render
         private readonly float[] depth_buffer;
     }
 
-    internal class ConsoleRenderer : Singleton<ConsoleRenderer>
+    internal class ConsoleRenderer : CoreComponent<ConsoleRenderer>
     {
         private readonly char[] gradient = [' ', '.', '`', ';', 'I', 'S', 'O', '%', '&', '@'];
         //private readonly char[] gradient = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '@'];
@@ -19,11 +21,12 @@ namespace CrossEngine.Render
         //const float MaxDrawDistance = 9999;
         //const float minShadow = 10;
 
-        private readonly CharInfo[] char_buffer;
-        private readonly float[] depth_buffer;
+        private CharInfo[] char_buffer;
+        private float[] depth_buffer;
 
-        private readonly ConsoleWindow window;
-        private readonly Camera camera;
+        private ConsoleWindow window;
+        private Camera camera;
+
 
         //public ConsoleRenderer(ConsoleScreen screen, ref Camera camera)
         //{
@@ -35,15 +38,18 @@ namespace CrossEngine.Render
 
         //    camera.RayLength = screen.AspectRatio / 2;
         //}
-        public ConsoleRenderer(ConsoleWindow window, ref Camera camera)
+
+        public override void Initialize()
         {
-            this.camera = camera;
-            this.window = window;
+            camera = Camera.EditorCamera;
+            window = Engine.GetCoreComponent<WindowManager>().GetWindow<RenderWindow>();
 
             char_buffer = new CharInfo[window.WriteWidth * window.WriteHeight];
             depth_buffer = new float[window.WriteWidth * window.WriteHeight];
 
             camera.RayLength = ((float)window.WriteWidth / window.WriteHeight) / 2;
+
+            base.Initialize();
         }
 
         internal CharInfo[] Render(List<IRayCastable> gameObjects)//, List<ILightSource> light)
@@ -75,6 +81,7 @@ namespace CrossEngine.Render
                 //char_buffer[indx].Char.UnicodeChar = ' ';
                 //char_buffer[indx].Attributes = (int)ConsoleColor.Black << 4 | (int)ConsoleColor.White;
                 //Console.WriteLine(point - camera.Transform.Position);
+                ConsoleScreen screen = Engine.GetCoreComponent<ConsoleScreen>();
 
                 for (int i = 0; i < window.WriteWidth; i++)
                 {
@@ -86,8 +93,9 @@ namespace CrossEngine.Render
 
                         int index = j * window.WriteWidth + i;
                         float u = i * 2.0f / window.WriteWidth - 1,
-                                v = j * 2.0f / window.WriteHeight - 1;
-                        Vector2 uv = new(u * ConsoleScreen.instance.AspectRatio * ConsoleScreen.instance.SymbolAspectRatio, v);
+                                v = j * 2.0f / window.WriteHeight - 1;                        
+
+                        Vector2 uv = new(u * screen.AspectRatio * screen.SymbolAspectRatio, v);
 
                         ray.Direction = Vector3.Transform(new Vector3(uv, camera.RayLength), camera.Transform.RotationMatrix);
 

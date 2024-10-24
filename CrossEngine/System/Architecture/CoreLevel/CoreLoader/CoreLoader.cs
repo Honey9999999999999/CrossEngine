@@ -6,12 +6,12 @@ namespace CrossEngine.System.Kernel
     {
         public static void LoadCore(CoreLoaderConfig config)
         {
-            new Core();
-            IEnumerator loadCoreRoutine = instance.LoadCoreRoutine(config.coreComponents);
+            _ = new Core();
+            IEnumerator loadCoreRoutine = Instance.LoadCoreRoutine(config.CoreComponents);
             while (loadCoreRoutine.MoveNext()) ;
         }
 
-        private IEnumerator LoadCoreRoutine(List<IInitializeble> coreComponents)
+        private IEnumerator LoadCoreRoutine(Dictionary<Type, IInitializeble> coreComponents)
         {
             SendOnCreateToAllCoreComponents(coreComponents);
             yield return null;
@@ -22,17 +22,17 @@ namespace CrossEngine.System.Kernel
             yield return null;
         }
 
-        private void SendOnCreateToAllCoreComponents(List<IInitializeble> coreComponents)
+        private void SendOnCreateToAllCoreComponents(Dictionary<Type, IInitializeble> coreComponents)
         {
-            foreach (var _coreComponent in coreComponents)
+            foreach (var _coreComponent in coreComponents.Values)
             {
                 _coreComponent.OnCreate();
             }
         }
 
-        private void SendInitializeToAllCoreComponents(List<IInitializeble> coreComponents)
+        private void SendInitializeToAllCoreComponents(Dictionary<Type, IInitializeble> coreComponents)
         {
-            foreach (var _coreComponent in coreComponents)
+            foreach (var _coreComponent in coreComponents.Values)
             {
                 _coreComponent.Initialize();
             }

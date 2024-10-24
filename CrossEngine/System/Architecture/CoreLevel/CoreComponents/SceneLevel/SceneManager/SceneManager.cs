@@ -19,11 +19,16 @@ namespace CrossEngine.System
 
         private const string DICTIONARY_MAP_NAME = "ScenesMap";
 
+        private static SceneManager Instance => Engine.GetCoreComponent<SceneManager>();
+        private FileManager _fileManager;
+
         public SceneManager()
         {
-            if (FileManager.IsPathExist(SavePlace.Scenes, DICTIONARY_MAP_NAME))
+            _fileManager = Engine.GetCoreComponent<FileManager>();
+
+            if (_fileManager.IsPathExist(SavePlace.Scenes, DICTIONARY_MAP_NAME))
             {
-                _scenesMap = FileManager.LoadFromXml<List<string>>(SavePlace.Scenes, DICTIONARY_MAP_NAME);
+                _scenesMap = _fileManager.LoadFromXml<List<string>>(SavePlace.Scenes, DICTIONARY_MAP_NAME);
             }
             else
             {
@@ -54,78 +59,78 @@ namespace CrossEngine.System
 
 
 
-        public static void CreateScene(string name)
+        public void CreateScene(string name)
         {
             Scene scene = new()
             {
                 Name = name,
-                Index = instance._scenesMap.Count
+                Index = _scenesMap.Count
             };
 
-            FileManager.SaveInXml(scene, name, SavePlace.Scenes);
+            _fileManager.SaveInXml(scene, name, SavePlace.Scenes);
 
-            instance._scenesMap.Add(scene.Name);
+            _scenesMap.Add(scene.Name);
 
-            FileManager.SaveInXml(instance._scenesMap, DICTIONARY_MAP_NAME, SavePlace.Scenes);
+            _fileManager.SaveInXml(_scenesMap, DICTIONARY_MAP_NAME, SavePlace.Scenes);
 
-            instance._activeScene = scene;
+            _activeScene = scene;
         }
 
 
 
         public static Scene GetActiveScene()
         {
-            if (instance._activeScene == null)
+            if (Instance._activeScene == null)
             {
                 throw new CrossException("Scene is not loaded!");
             }
 
-            return instance._activeScene;
+            return Instance._activeScene;
         }
         internal static bool TryGetActiveScene(out Scene? scene)
         {
-            bool isContains = instance._activeScene != null;
-            scene = isContains ? instance._activeScene : null;
+            bool isContains = Instance._activeScene != null;
+            scene = isContains ? Instance._activeScene : null;
             return isContains;
         }
 
         public static Scene GetSceneAt(int index)
         {
-            return instance.GetScene(instance._scenesMap[index]);
+            return Instance.GetScene(Instance._scenesMap[index]);
         }
         public static Scene GetSceneByName(string name)
         {
-            return instance.GetScene(name);
+            return Instance.GetScene(name);
         }
 
 
 
         public static void LoadScene(int index)
         {
-            LoadScene(instance._scenesMap[index]);
+            LoadScene(Instance._scenesMap[index]);
         }
         public static void LoadScene(string name)
         {
-            if (instance._activeScene != null)
+            if (Instance._activeScene != null)
             {
                 OnSceneUploading?.Invoke();
             }
 
-            instance._activeScene = instance.GetScene(name);
+            Instance._activeScene = Instance.GetScene(name);
 
             OnSceneLoaded?.Invoke();
         }
 
         private Scene GetScene(string name)
         {
-            return FileManager.LoadFromXml<Scene>(SavePlace.Scenes, name);
+            return _fileManager.LoadFromXml<Scene>(SavePlace.Scenes, name);
         }
 
 
 
-        public static void StartActiveScene()
+        public void StartActiveScene()
         {
-            IEnumerator loadSceneRoutine = instance.StartSceneRoutine(GetActiveScene());
+            IEnumerator loadSceneRoutine = StartSceneRoutine(GetActiveScene());
             while (loadSceneRoutine.MoveNext()) ;
 
             OnSceneStarted?.Invoke();
@@ -171,9 +176,9 @@ namespace CrossEngine.System
             }
         }
 
-        private static void StopActiveScene()
+        private void StopActiveScene()
         {
-            IEnumerator uploadSceneRoutine = StopSceneRoutine(instance._activeScene.RootNode.Transform.GetChilds());
+            IEnumerator uploadSceneRoutine = StopSceneRoutine(_activeScene.RootNode.Transform.GetChilds());
             while (uploadSceneRoutine.MoveNext()) ;
 
             OnSceneStoped?.Invoke();

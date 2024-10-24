@@ -16,10 +16,10 @@ namespace CrossEngine.Render
 
         public ConsoleScreen()
         {
-            ScreenConfiguration configuration;
+            FileManager fileManager = Engine.GetCoreComponent<FileManager>();
 
-            configuration = FileManager.IsPathExist(SavePlace.Screen, _fileName)
-                ? FileManager.LoadFromXml<ScreenConfiguration>(SavePlace.Screen, _fileName)
+            ScreenConfiguration configuration = fileManager.IsPathExist(SavePlace.Screen, _fileName)
+                ? fileManager.LoadFromXml<ScreenConfiguration>(SavePlace.Screen, _fileName)
                 : new ScreenConfiguration();
 
             Width = configuration.Width;
@@ -28,7 +28,7 @@ namespace CrossEngine.Render
             AspectRatio = (float)Width / Height;
             SymbolAspectRatio = configuration.SymbolAspectRatio;
 
-            FileManager.SaveInXml(configuration, _fileName, SavePlace.Screen);
+            fileManager.SaveInXml(configuration, _fileName, SavePlace.Screen);
 
             Console.SetWindowSize(Width, Height);
             Console.SetBufferSize(Width, Height);

@@ -1,8 +1,8 @@
 ﻿namespace CrossEngine.System
 {
-    public abstract class Singleton<T> where T : Singleton<T>
+    public abstract class Singleton<T> where T : class
     {
-        public static T instance
+        public static T Instance
         {
             get
             {
@@ -24,7 +24,7 @@
                 throw new CrossException($"{_instance.GetType()} was be initialized");
             }
 
-            _instance = (T)this;
+            _instance = this as T;
         }
     }
 }

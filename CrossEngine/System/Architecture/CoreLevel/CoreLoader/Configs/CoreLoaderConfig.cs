@@ -2,33 +2,30 @@
 {
     internal abstract class CoreLoaderConfig
     {
-        public List<IInitializeble> coreComponents
+        public Dictionary<Type, IInitializeble> CoreComponents
         {
             get
             {
-                if (_coreComponents == null)
-                {
-                    _coreComponents = [];
+                if(_coreComponents.Count == 0)
                     CreateAllCoreComponents();
-                }
 
                 return _coreComponents;
             }
         }
 
-        private List<IInitializeble>? _coreComponents;
+        private readonly Dictionary<Type, IInitializeble> _coreComponents = [];
 
 
         protected abstract void CreateAllCoreComponents();
 
-        protected void CreateComponent<TCrossBehaviour>() where TCrossBehaviour : IInitializeble, new()
+        protected void CreateComponent<TCoreComponent>() where TCoreComponent : IInitializeble, new()
         {
-            if (_coreComponents == null)
-            {
-                throw new CrossException("Dictionary of components is null!!!");
-            }
+            _coreComponents[typeof(TCoreComponent)] = new TCoreComponent();
+        }
 
-            _coreComponents.Add(new TCrossBehaviour());
+        public TCoreComponent GetCoreComponent<TCoreComponent>() where TCoreComponent : IInitializeble, new()
+        {
+            return (TCoreComponent)CoreComponents[typeof(TCoreComponent)];
         }
     }
 }

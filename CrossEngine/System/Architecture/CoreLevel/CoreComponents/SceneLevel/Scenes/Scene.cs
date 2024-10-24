@@ -4,12 +4,18 @@
     {
         public string Name { get; set; }
         public int Index { get; set; }
+
+        public GameObject EditorNode { get; init; }
         public GameObject RootNode { get; init; }
 
         internal Scene()
         {
             Name = "Default Scene";
+            EditorNode = new("EditorNode", null);
             RootNode = new("RootNode", null);
+
+            GameObject camera = new("MainCamera", RootNode.Transform);
+            camera.AddComponent<Camera>().MakeMain();
         }
 
         public TComponent[] GetAllComponents<TComponent>(Transform[] parent) where TComponent : Component, new()

@@ -5,6 +5,8 @@
         public CrossException(string? message) : base(message)
         {
             Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(message);
+            Console.ForegroundColor = ConsoleColor.White;
         }
     }
 }

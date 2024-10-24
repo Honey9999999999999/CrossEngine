@@ -1,5 +1,6 @@
 ﻿using CrossEngine.Objects;
 using CrossEngine.Render;
+using CrossEngine.System;
 using CrossEngine.System.Architecture.Interface;
 using SharpHook.Native;
 using System.Collections;
@@ -16,8 +17,7 @@ namespace CrossEngine
         {
             base.Start();
 
-            camera = new("Camera");
-            camera.AddComponent<Camera>();
+            camera = Camera.EditorCamera.GameObject;
 
             GameObject[] objects = [new("Sphere 1"), new("Sphere 2"), new("Sphere 2"), new("Sphere 2"), new("Sphere 2"), new("Sphere 2"), new("Sphere 2"), new("Sphere 2"), new("Sphere 2")];
 
@@ -61,7 +61,7 @@ namespace CrossEngine
                 camera.Transform.Position -= camera.Transform.Forward * Time.DeltaTime;
             }
 
-            if (Input.GetKey(KeyCode.VcE))
+            if (Input.GetKey(KeyCode.VcF))
             {
                 if (GameObject.TryGetGameObjectWithName($"Test{counter}", out GameObject gameObject))
                 {
@@ -79,14 +79,11 @@ namespace CrossEngine
             camera.Transform.Position = new(0, -5, 0);
             camera.Transform.Rotation = new(MathF.PI / 2, 0, 0);
 
-            Camera cameraCom = camera.GetComponent<Camera>();
 
-            RenderWindow window = new();
-            _ = new ConsoleRenderer(window, ref cameraCom);
 
             while (true)
             {
-                window.UpdateWithBounds();
+                Engine.GetCoreComponent<WindowManager>().GetWindow<RenderWindow>().UpdateWithBounds();
                 yield return null;
             }
         }

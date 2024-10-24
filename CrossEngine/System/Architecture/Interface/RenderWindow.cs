@@ -7,13 +7,23 @@ namespace CrossEngine.System.Architecture.Interface
 {
     internal class RenderWindow : ConsoleWindow
     {
-        public RenderWindow() : base(new Vector2(25, 0), new Vector2(ConsoleScreen.instance.Width - 26, ConsoleScreen.instance.Height)) { }
+        ConsoleRenderer renderer;
+
+        public RenderWindow() : base(new Vector2(25, 0), 
+            new Vector2(Engine.GetCoreComponent<ConsoleScreen>().Width - 26, Engine.GetCoreComponent<ConsoleScreen>().Height))
+        {
+            renderer = Engine.GetCoreComponent<ConsoleRenderer>();
+        }
+
+        public override void Update()
+        {
+        }
 
         protected override CharInfo[] BuildCharArray()
         {
             Sphere[] sphereList = UpdateSphereList();
 
-            return ConsoleRenderer.instance.Render([.. sphereList]);
+            return renderer.Render([.. sphereList]);
         }
 
         private Sphere[] UpdateSphereList() => SceneManager.GetActiveScene().GetAllComponents<Sphere>(SceneManager.GetActiveScene().RootNode.Transform.GetChilds());

@@ -6,12 +6,16 @@ namespace CrossEngine.System.Kernel
     {
         protected override void CreateAllCoreComponents()
         {
-            CreateComponent<FileManager>();
-            CreateComponent<ConsoleScreen>();
+            CreateComponent<FileManager>();            
             CreateComponent<SceneManager>();
             CreateComponent<SceneTree>();
+
             CreateComponent<Time>();
-            CreateComponent<Input>();
+            CreateComponent<Input>(); //Создает якорь, работает в асинхроне, отцепить якорь при закрытии приложения
+
+            CreateComponent<ConsoleScreen>();
+            CreateComponent<ConsoleRenderer>();
+            CreateComponent<WindowManager>();            
         }
     }
 }
